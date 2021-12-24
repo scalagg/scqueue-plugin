@@ -1,0 +1,4 @@
+dependencies {
+    implementation 'com.github.GrowlyX.data-store:commons:0249e4d2a5'
+    implementation fileTree("internal")
+}
