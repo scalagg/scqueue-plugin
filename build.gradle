@@ -36,7 +36,11 @@ subprojects {
 
     dependencies {
         compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
-        compileOnly 'com.github.GrowlyX.data-store:commons:0249e4d2a5'
+
+        compileOnly 'com.github.growlyx:flavor:bea8145510'
+        compileOnly 'com.github.scalagg.scala-store:shared:217d6f05c0'
+        compileOnly 'com.google.guava:guava:31.0.1-jre'
+
         compileOnly fileTree("internal")
     }
 
