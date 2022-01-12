@@ -1,4 +1,4 @@
-package gg.scala.cougar.server.message
+package gg.scala.cougar.common.message
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import gg.scala.banana.Banana

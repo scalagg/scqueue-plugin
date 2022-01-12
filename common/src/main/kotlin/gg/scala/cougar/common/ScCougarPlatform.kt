@@ -1,7 +1,14 @@
 package gg.scala.cougar.common
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
+import gg.scala.banana.Banana
+import gg.scala.banana.annotate.Subscribe
+import gg.scala.banana.credentials.BananaCredentials
+import gg.scala.banana.message.Message
+import gg.scala.banana.options.BananaOptions
+import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
 import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
@@ -49,6 +56,8 @@ abstract class ScCougarPlatform
         )
     }
 
+    val queueDatabaseIds = mutableMapOf<String, UUID>()
+
     abstract fun updateLocalInstance()
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
@@ -84,7 +93,23 @@ abstract class ScCougarPlatform
 
         if (shouldTrackInstance())
         {
-            executor.scheduleAtFixedRate({
+            ScCougarServerMessageProducer.banana.registerClass(object : BananaHandler {
+                @Subscribe("queue-update")
+                fun onQueueUpdate(message: Message)
+                {
+                    message["uniqueId"]?.let {
+                        val uniqueId = UUID.fromString(it)
+
+                        queueLayer
+                            .load(uniqueId, DataStoreStorageType.REDIS)
+                            .join()?.let { wrapped ->
+                                queueLayer.localCache[uniqueId] = wrapped
+                            }
+                    }
+                }
+            })
+
+            ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
                 updateLocalInstance()
 
                 instanceLayer.save(
@@ -94,9 +119,8 @@ abstract class ScCougarPlatform
                         System.currentTimeMillis()
                 }
             }, 0L, 1L, TimeUnit.SECONDS)
-        } else
-        {
-            executor.scheduleAtFixedRate({
+
+            ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
                 val queues = queueLayer
                     .loadAll(DataStoreStorageType.REDIS)
                     .join()

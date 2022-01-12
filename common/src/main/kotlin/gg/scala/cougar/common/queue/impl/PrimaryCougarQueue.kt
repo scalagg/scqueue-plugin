@@ -1,9 +1,12 @@
 package gg.scala.cougar.common.queue.impl
 
 import gg.scala.cougar.common.ScCougarPlatform
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
 import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.inject.Inject
+import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -24,8 +27,20 @@ class PrimaryCougarQueue(
 
     fun pushDataUpdates(): CompletableFuture<Void>
     {
-        return ScCougarPlatform.INSTANCE.queueLayer.save(
-            CougarQueueWrapper(targetServerId, fancyDisplayName, getHandle())
+        val wrapped = CougarQueueWrapper(
+            targetServerId, fancyDisplayName, getHandle(),
+            ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
         )
+
+        return ScCougarPlatform.INSTANCE.queueLayer
+            .save(wrapped, DataStoreStorageType.REDIS)
+            .thenRun {
+                produce(
+                    "queue-update",
+                    "uniqueId" to wrapped.identifier
+                ).dispatch(
+                    ScCougarServerMessageProducer.banana
+                )
+            }
     }
 }
