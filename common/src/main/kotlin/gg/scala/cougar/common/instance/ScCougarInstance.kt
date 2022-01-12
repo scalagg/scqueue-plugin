@@ -2,6 +2,7 @@ package gg.scala.cougar.common.instance
 
 import gg.scala.store.storage.storable.IDataStoreObject
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * @author GrowlyX
@@ -12,6 +13,18 @@ class ScCougarInstance(
     override val identifier: UUID = UUID.randomUUID()
 ): IDataStoreObject
 {
+    companion object
+    {
+        @JvmStatic
+        val TIMEOUT = TimeUnit.SECONDS.toMillis(10L)
+    }
+
+    val isMaxCapacity: Boolean
+        get() = players >= maxPlayers
+
+    val isNotUpToDate: Boolean
+        get() = lastHeartbeat + TIMEOUT < System.currentTimeMillis()
+
     var players = 0
     var maxPlayers = 0
 

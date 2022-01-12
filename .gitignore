@@ -3,6 +3,9 @@
 *.iml
 *.iws
 
+# Development Environment
+./server/devenv
+
 # Mac
 .DS_Store
 

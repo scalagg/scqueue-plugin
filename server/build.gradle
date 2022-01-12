@@ -8,8 +8,9 @@ application {
 
 dependencies {
     implementation fileTree("internal")
+    implementation project(":common")
 
-    implementation 'com.github.growlyx:flavor:bea8145510'
+    implementation 'com.github.growlyx:flavor:0.1.2'
     implementation 'com.github.scalagg.scala-store:shared:217d6f05c0'
     implementation 'com.google.guava:guava:31.0.1-jre'
 }

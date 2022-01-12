@@ -11,9 +11,12 @@ import java.util.*
  * @author GrowlyX
  * @since 12/24/2021
  */
-abstract class Queue<T>(comparator: Comparator<T>)
+open class Queue<T>(comparator: Comparator<T>)
 {
+    @Transient
     private val priorityQueue = PriorityQueue(comparator)
+
+    fun getHandle() = priorityQueue
 
     fun isInQueue(t: T) = priorityQueue.contains(t)
     fun sizeOfQueue() = priorityQueue.size
