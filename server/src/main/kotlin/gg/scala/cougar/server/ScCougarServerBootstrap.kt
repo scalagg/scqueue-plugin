@@ -5,6 +5,7 @@ import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
+import gg.scala.cougar.server.iterator.ScCougarQueueIterator
 import gg.scala.cougar.server.message.ScCougarServerMessageConsumer
 import gg.scala.cougar.server.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
@@ -68,14 +69,20 @@ object ScCougarServerBootstrap : ScCougarPlatform()
 
         flavor.bind<CougarLanguageSettings>().instance =
             CougarSettingsProcessor.locate<CougarLanguageSettings>()!!
+
         flavor.bind<CougarQueueSettings>().instance =
             CougarSettingsProcessor.locate<CougarQueueSettings>()!!
+
         flavor.bind<CougarIterationSettings>().instance =
             CougarSettingsProcessor.locate<CougarIterationSettings>()!!
 
         configure()
 
         flavor.inject(ScCougarServerMessageConsumer)
+        flavor.inject(ScCougarQueueIterator)
+
+        Runtime.getRuntime()
+            .addShutdownHook(thread { close() })
 
         LOGGER.info("Finished startup in ${System.currentTimeMillis() - startup}ms (${
             (System.currentTimeMillis() - startup) / 1000

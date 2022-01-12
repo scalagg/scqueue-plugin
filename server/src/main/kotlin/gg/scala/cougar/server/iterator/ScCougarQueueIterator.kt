@@ -91,6 +91,8 @@ object ScCougarQueueIterator : Runnable
                 ).dispatch(
                     ScCougarServerMessageProducer.banana
                 )
+
+                queue.pushDataUpdates()
             }
         }
     }
