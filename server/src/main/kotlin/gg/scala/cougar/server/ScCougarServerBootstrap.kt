@@ -19,6 +19,7 @@ import net.evilblock.cubed.serializers.Serializers
 import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
 import java.lang.Thread.sleep
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.logging.Logger
 import kotlin.concurrent.thread
 
@@ -38,15 +39,6 @@ object ScCougarServerBootstrap : ScCougarPlatform()
     {
         val startup = System.currentTimeMillis()
         LOGGER.info("Starting cougar server...")
-
-        thread(
-            start = true
-        ) {
-            while (true)
-            {
-                sleep(Long.MAX_VALUE)
-            }
-        }
 
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreStandaloneImpl
 
@@ -93,7 +85,16 @@ object ScCougarServerBootstrap : ScCougarPlatform()
                         }.values.firstOrNull()?.identifier
                             ?: UUID.randomUUID()
                     }
+
+                queue.setHandle(PriorityQueue())
             }
+
+            executor.scheduleAtFixedRate({
+                for (queue in queues)
+                {
+                    queue.pushDataUpdates()
+                }
+            }, 0L, 1L, TimeUnit.SECONDS)
         }
 
         Runtime.getRuntime()

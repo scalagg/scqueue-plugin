@@ -5,4 +5,4 @@ version: 1.0.0-pty
 author: Scala
 website: https://scala.gg
 
-depend: [Lemon, helper, Cubed]
+depend: [Lemon, helper, store-spigot, Cubed]

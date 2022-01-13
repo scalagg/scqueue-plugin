@@ -18,7 +18,7 @@ object JoinQueueCommand : BaseCommand()
 {
     @CommandAlias("joinq|joinqueue|queue")
     @CommandPermission("cougar.command.joinqueue")
-    fun onJoinQueue(player: Player, wrapper: CougarQueueWrapper)
+    fun onJoinQueue(player: Player, server: CougarQueueWrapper)
     {
         val engine = ScalaCougarSpigotProprietaryEngine
 
@@ -33,14 +33,14 @@ object JoinQueueCommand : BaseCommand()
 
         ScCougarServerMessageProducer.produce(
             "queue-add",
-            "serverId" to wrapper.serverId,
+            "serverId" to server.serverId,
             "uniqueId" to player.uniqueId
         ).dispatch(
             ScCougarServerMessageProducer.banana
         )
 
         player.sendMessage("${CC.GREEN}You've been added to the ${CC.YELLOW}${
-            wrapper.fancyDisplayName
+            server.fancyDisplayName
         }${CC.GREEN} queue.")
     }
 }

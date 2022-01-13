@@ -7,6 +7,7 @@ import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.inject.Inject
 import gg.scala.store.storage.type.DataStoreStorageType
+import net.evilblock.cubed.serializers.Serializers
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -27,20 +28,30 @@ class PrimaryCougarQueue(
 
     fun pushDataUpdates(): CompletableFuture<Void>
     {
-        val wrapped = CougarQueueWrapper(
-            targetServerId, fancyDisplayName, getHandle(),
-            ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
-        )
+        try
+        {
+            val wrapped = CougarQueueWrapper(
+                targetServerId, fancyDisplayName, LinkedList<UUID>().also { it.addAll(getHandle()) },
+                ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
+            )
 
-        return ScCougarPlatform.INSTANCE.queueLayer
-            .save(wrapped, DataStoreStorageType.REDIS)
-            .thenRun {
-                produce(
-                    "queue-update",
-                    "uniqueId" to wrapped.identifier
-                ).dispatch(
-                    ScCougarServerMessageProducer.banana
-                )
-            }
+            return ScCougarPlatform.INSTANCE.queueLayer
+                .save(wrapped, DataStoreStorageType.REDIS)
+                .whenComplete { _, u ->
+                    u?.printStackTrace()
+
+                    produce(
+                        "queue-update",
+                        "uniqueId" to wrapped.identifier
+                    ).dispatch(
+                        ScCougarServerMessageProducer.banana
+                    )
+                }
+        } catch (exception: Exception)
+        {
+            exception.printStackTrace()
+        }
+
+        return CompletableFuture.runAsync {}
     }
 }

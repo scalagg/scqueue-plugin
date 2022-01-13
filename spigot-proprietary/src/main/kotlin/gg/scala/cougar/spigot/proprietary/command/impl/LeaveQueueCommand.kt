@@ -16,9 +16,18 @@ import org.bukkit.entity.Player
  */
 object LeaveQueueCommand : BaseCommand()
 {
+    @CommandAlias("queuetest")
+    @CommandPermission("op")
+    fun onTest(player: Player)
+    {
+        player.sendMessage(
+            ScalaCougarSpigotProprietaryEngine.queueLayer.localCache.values.joinToString { it.fancyDisplayName }
+        )
+    }
+
     @CommandAlias("leaveq|leavequeue")
     @CommandPermission("cougar.command.leavequeue")
-    fun onJoinQueue(player: Player, wrapper: CougarQueueWrapper)
+    fun onJoinQueue(player: Player)
     {
         val engine = ScalaCougarSpigotProprietaryEngine
 
@@ -38,8 +47,9 @@ object LeaveQueueCommand : BaseCommand()
             ScCougarServerMessageProducer.banana
         )
 
-        player.sendMessage("${CC.RED}You've left the ${CC.YELLOW}${
-            wrapper.fancyDisplayName
-        }${CC.RED} queue.")
+        // the ${CC.YELLOW}${
+        //            wrapper.fancyDisplayName
+        //        }${CC.RED}
+        player.sendMessage("${CC.RED}You've left queue.")
     }
 }

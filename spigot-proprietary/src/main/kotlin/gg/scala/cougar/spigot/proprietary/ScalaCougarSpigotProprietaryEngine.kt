@@ -20,6 +20,8 @@ object ScalaCougarSpigotProprietaryEngine : ScCougarPlatform()
 
     override fun configure()
     {
+        super.configure()
+
         val databaseId = instanceLayer
             .useLayerWithReturn<RedisDataStoreStorageLayer<ScCougarInstance>, UUID>(
                 DataStoreStorageType.REDIS
@@ -33,8 +35,6 @@ object ScalaCougarSpigotProprietaryEngine : ScCougarPlatform()
         instance = ScCougarInstance(
             Lemon.instance.settings.id, databaseId
         )
-
-        super.configure()
     }
 
     override fun updateLocalInstance()

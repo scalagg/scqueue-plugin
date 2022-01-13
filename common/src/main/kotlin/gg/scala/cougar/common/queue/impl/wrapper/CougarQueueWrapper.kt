@@ -10,18 +10,18 @@ import java.util.*
 class CougarQueueWrapper(
     val serverId: String,
     val fancyDisplayName: String,
-    private val priorityQueue: PriorityQueue<UUID>,
+    val linkedList: LinkedList<UUID>,
     override val identifier: UUID = UUID.randomUUID(),
 ) : IDataStoreObject
 {
-    fun isInQueue(t: UUID) = priorityQueue.contains(t)
-    fun sizeOfQueue() = priorityQueue.size
+    fun isInQueue(t: UUID) = linkedList.contains(t)
+    fun sizeOfQueue() = linkedList.size
 
     fun getPosition(t: UUID): Int
     {
-        val copyOfQueue = PriorityQueue(priorityQueue)
+        val copyOfQueue = PriorityQueue(linkedList)
 
-        for (index in 0..priorityQueue.size)
+        for (index in 0..linkedList.size)
         {
             if (copyOfQueue.poll() == t)
             {

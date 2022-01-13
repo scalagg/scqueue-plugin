@@ -14,9 +14,14 @@ import java.util.*
 open class Queue<T>(comparator: Comparator<T>)
 {
     @Transient
-    private val priorityQueue = PriorityQueue(comparator)
+    private var priorityQueue = PriorityQueue(comparator)
 
     fun getHandle() = priorityQueue
+
+    fun setHandle(priorityQueue: PriorityQueue<T>)
+    {
+        this.priorityQueue = priorityQueue
+    }
 
     fun isInQueue(t: T) = priorityQueue.contains(t)
     fun sizeOfQueue() = priorityQueue.size

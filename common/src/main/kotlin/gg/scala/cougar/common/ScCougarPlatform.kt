@@ -109,6 +109,8 @@ abstract class ScCougarPlatform
                 }
             })
 
+            ScCougarServerMessageProducer.banana.subscribe()
+
             ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
                 updateLocalInstance()
 
@@ -118,7 +120,7 @@ abstract class ScCougarPlatform
                     getLocalInstance().lastHeartbeat =
                         System.currentTimeMillis()
                 }
-            }, 0L, 1L, TimeUnit.SECONDS)
+            }, 1L, 1L, TimeUnit.SECONDS)
 
             ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
                 val queues = queueLayer
@@ -129,7 +131,7 @@ abstract class ScCougarPlatform
                 {
                     queueLayer.localCache[queue.key] = queue.value
                 }
-            }, 0L, 1L, TimeUnit.SECONDS)
+            }, 1L, 1L, TimeUnit.SECONDS)
         }
 
         flavor.startup()

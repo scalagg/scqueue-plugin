@@ -16,10 +16,10 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
             FlavorOptions(logger)
         )
 
+        ScalaCougarSpigotProprietaryEngine.configure()
+
         flavor.bind<ScalaCougarSpigotProprietaryPlugin>() to this
         flavor.startup()
-
-        ScalaCougarSpigotProprietaryEngine.configure()
     }
 
     override fun disable()
