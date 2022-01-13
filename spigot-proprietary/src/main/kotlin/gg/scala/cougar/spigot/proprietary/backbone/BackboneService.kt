@@ -80,8 +80,6 @@ object BackboneService
     @Subscribe("queue-update-stream")
     fun onQueueUpdates(message: Message)
     {
-        val queueId = UUID.fromString(message["queueId"])
-
         val messages = Serializers.gson
             .fromJson<Map<UUID, String>>(
                 message["messages"], typeToken
