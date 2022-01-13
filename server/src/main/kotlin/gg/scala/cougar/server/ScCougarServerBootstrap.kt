@@ -4,17 +4,14 @@ import gg.scala.banana.Banana
 import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.server.iterator.ScCougarQueueIterator
-import gg.scala.cougar.common.message.ScCougarServerMessageConsumer
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer
+import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.cougar.server.store.ScalaDataStoreStandaloneImpl
-import gg.scala.flavor.Flavor
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
@@ -22,7 +19,6 @@ import net.evilblock.cubed.serializers.Serializers
 import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
 import java.lang.Thread.sleep
 import java.util.*
-import java.util.concurrent.locks.Condition
 import java.util.logging.Logger
 import kotlin.concurrent.thread
 

@@ -78,7 +78,7 @@ abstract class ScCougarPlatform
         playerLayer.remove(uniqueId)
     }
 
-    fun configure()
+    open fun configure()
     {
         INSTANCE = this
 
