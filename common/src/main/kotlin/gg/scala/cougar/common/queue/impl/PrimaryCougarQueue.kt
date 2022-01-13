@@ -28,30 +28,20 @@ class PrimaryCougarQueue(
 
     fun pushDataUpdates(): CompletableFuture<Void>
     {
-        try
-        {
-            val wrapped = CougarQueueWrapper(
-                targetServerId, fancyDisplayName, LinkedList<UUID>().also { it.addAll(getHandle()) },
-                ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
-            )
+        val wrapped = CougarQueueWrapper(
+            targetServerId, fancyDisplayName, LinkedList<UUID>().also { it.addAll(getHandle()) },
+            ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
+        )
 
-            return ScCougarPlatform.INSTANCE.queueLayer
-                .save(wrapped, DataStoreStorageType.REDIS)
-                .whenComplete { _, u ->
-                    u?.printStackTrace()
-
-                    produce(
-                        "queue-update",
-                        "uniqueId" to wrapped.identifier
-                    ).dispatch(
-                        ScCougarServerMessageProducer.banana
-                    )
-                }
-        } catch (exception: Exception)
-        {
-            exception.printStackTrace()
-        }
-
-        return CompletableFuture.runAsync {}
+        return ScCougarPlatform.INSTANCE.queueLayer
+            .save(wrapped, DataStoreStorageType.REDIS)
+            .thenRun {
+                produce(
+                    "queue-update",
+                    "uniqueId" to wrapped.identifier
+                ).dispatch(
+                    ScCougarServerMessageProducer.banana
+                )
+            }
     }
 }

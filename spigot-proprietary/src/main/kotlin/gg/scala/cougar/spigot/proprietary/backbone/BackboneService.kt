@@ -10,6 +10,7 @@ import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
+import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import net.evilblock.cubed.serializers.Serializers
 import net.evilblock.cubed.util.CC
 import net.evilblock.cubed.util.bukkit.Tasks
@@ -23,6 +24,7 @@ import java.util.*
  * @since 1/12/2022
  */
 @Service
+@IgnoreAutoScan
 object BackboneService
 {
     private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
@@ -36,18 +38,18 @@ object BackboneService
         )
     )
 
-    private val bukkitBackbone = Banana(
-        BananaCredentials(),
-        BananaOptions(
-            channel = "cougar:backbone:bukkit",
-            gson = Serializers.gson,
-            executor = ScCougarServerMessageProducer.executor
-        )
-    )
-
     @Configure
     fun configure()
     {
+        val bukkitBackbone = Banana(
+            BananaCredentials(),
+            BananaOptions(
+                channel = "cougar:bukkit",
+                gson = Serializers.gson,
+                executor = ScCougarServerMessageProducer.executor
+            )
+        )
+
         bukkitBackbone.registerClass(this)
         bukkitBackbone.subscribe()
     }

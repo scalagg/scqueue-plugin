@@ -46,7 +46,6 @@ abstract class ScCougarPlatform
     val executor: ScheduledExecutorService = Executors.newScheduledThreadPool(2,
         ThreadFactoryBuilder()
             .setNameFormat("Queue Thread Pool #%d")
-            .setDaemon(true)
             .build()
     )
 

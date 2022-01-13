@@ -39,7 +39,6 @@ object ScCougarQueueUpdateStreamIterator : Runnable
         val executor = Executors.newScheduledThreadPool(1,
             ThreadFactoryBuilder()
                 .setNameFormat("Queue Update Stream #%d")
-                .setDaemon(true)
                 .build()
         )
 
@@ -92,7 +91,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 "queueId" to queue.targetServerId,
                 "messages" to serializedMessageMap
             ).dispatch(
-                "cougar:backbone:bukkit",
+                "cougar:bukkit",
                 ScCougarServerMessageProducer.banana
             )
         }

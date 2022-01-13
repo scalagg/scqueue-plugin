@@ -7,7 +7,7 @@ application {
 }
 
 dependencies {
-    implementation fileTree("internal")
+    implementation fileTree("cubed")
     implementation project(":common")
 
     implementation 'com.github.growlyx:flavor:0.1.2'

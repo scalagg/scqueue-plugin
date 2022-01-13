@@ -7,6 +7,7 @@ import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.server.iterator.ScCougarQueueIterator
 import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
+import gg.scala.cougar.server.iterator.ScCougarQueueUpdateStreamIterator
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
@@ -72,6 +73,7 @@ object ScCougarServerBootstrap : ScCougarPlatform()
 
         flavor.inject(ScCougarServerMessageConsumer)
         flavor.inject(ScCougarQueueIterator)
+        flavor.inject(ScCougarQueueUpdateStreamIterator)
 
         CougarSettingsProcessor.locate<CougarQueueSettings>()!!.apply {
             for (queue in queues)

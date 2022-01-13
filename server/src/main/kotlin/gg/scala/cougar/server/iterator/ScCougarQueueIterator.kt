@@ -37,7 +37,6 @@ object ScCougarQueueIterator : Runnable
         val executor = Executors.newScheduledThreadPool(1,
             ThreadFactoryBuilder()
                 .setNameFormat("Queue Iterator #%d")
-                .setDaemon(true)
                 .build()
         )
 
@@ -82,18 +81,18 @@ object ScCougarQueueIterator : Runnable
             if (priorityQueue.isNotEmpty())
             {
                 val uniqueId = priorityQueue.poll()
+
                 queue.getHandle().remove(uniqueId)
+                queue.pushDataUpdates().join()
 
                 ScCougarServerMessageProducer.produce(
                     "send-player",
                     "uniqueId" to uniqueId,
                     "serverId" to queue.targetServerId
                 ).dispatch(
-                    "cougar:backbone:bukkit",
+                    "cougar:bukkit",
                     ScCougarServerMessageProducer.banana
                 )
-
-                queue.pushDataUpdates()
             }
         }
     }

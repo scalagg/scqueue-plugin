@@ -17,7 +17,6 @@ object ScCougarServerMessageProducer
     val executor = Executors.newScheduledThreadPool(2,
         ThreadFactoryBuilder()
             .setNameFormat("Queue Messaging #%d")
-            .setDaemon(true)
             .build()
     )
 

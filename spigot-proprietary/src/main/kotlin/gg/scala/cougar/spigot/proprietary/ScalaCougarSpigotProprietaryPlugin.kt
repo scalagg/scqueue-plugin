@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot.proprietary
 
+import gg.scala.cougar.spigot.proprietary.backbone.BackboneService
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
 import me.lucko.helper.plugin.ExtendedJavaPlugin
@@ -20,6 +21,8 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
 
         flavor.bind<ScalaCougarSpigotProprietaryPlugin>() to this
         flavor.startup()
+
+        BackboneService.configure()
     }
 
     override fun disable()
