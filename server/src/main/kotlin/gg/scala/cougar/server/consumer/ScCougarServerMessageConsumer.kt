@@ -64,4 +64,10 @@ object ScCougarServerMessageConsumer : BananaHandler
             .remove(uniqueId)
     }
 
+    @Subscribe("queue-add")
+    fun onQueueAdd(message: Message)
+    {
+
+    }
+
 }
