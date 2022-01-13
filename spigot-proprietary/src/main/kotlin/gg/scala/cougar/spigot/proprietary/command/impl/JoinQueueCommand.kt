@@ -35,7 +35,7 @@ object JoinQueueCommand : BaseCommand()
 
         val pVersion = MinecraftProtocol.getPlayerVersion(player)
 
-        if (server.allowedProtocols.contains(pVersion))
+        if (!server.allowedProtocols.contains(pVersion))
         {
             throw ConditionFailedException("You can only join this queue if you're on: ${
                 server.allowedProtocols

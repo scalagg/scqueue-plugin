@@ -71,6 +71,7 @@ abstract class ScCougarPlatform
     fun removeResources(uniqueId: UUID)
     {
         playerLayer.remove(uniqueId)
+        playerLayer.delete(uniqueId, DataStoreStorageType.REDIS).join()
     }
 
     open fun configure()
@@ -135,5 +136,13 @@ abstract class ScCougarPlatform
     fun close()
     {
         flavor.close()
+
+        if (shouldTrackInstance())
+        {
+            instanceLayer.delete(
+                queueDatabaseIds[getLocalInstance().serverId]!!,
+                DataStoreStorageType.REDIS
+            ).join()
+        }
     }
 }

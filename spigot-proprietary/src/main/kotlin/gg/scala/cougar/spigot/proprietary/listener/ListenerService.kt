@@ -10,8 +10,10 @@ import gg.scala.flavor.service.Service
 import gg.scala.lemon.Lemon
 import gg.scala.lemon.handler.PlayerHandler
 import me.lucko.helper.Events
+import net.evilblock.cubed.util.bukkit.Tasks
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import java.util.concurrent.ForkJoinPool
 
 /**
  * @author GrowlyX
@@ -46,7 +48,9 @@ object ListenerService
 
         Events.subscribe(PlayerQuitEvent::class.java)
             .handler {
-                engine.removeResources(it.player.uniqueId)
+                ForkJoinPool.commonPool().execute {
+                    engine.removeResources(it.player.uniqueId)
+                }
 
                 ScCougarServerMessageProducer.produce(
                     "player-disconnect",
