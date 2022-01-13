@@ -9,6 +9,9 @@ import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
+import gg.scala.cougar.server.settings.CougarSettingsProcessor
+import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
+import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
@@ -65,9 +68,43 @@ object ScCougarServerMessageConsumer : BananaHandler
     }
 
     @Subscribe("queue-add")
-    fun onQueueAdd(message: Message)
+    fun onQueueRemove(message: Message)
     {
+        val queues = CougarSettingsProcessor
+            .locate<CougarQueueSettings>()!!
 
+        val uniqueId = UUID
+            .fromString(message["uniqueId"])
+            ?: return
+
+        val queue = queues.queues
+            .firstOrNull {
+                it.getHandle().contains(uniqueId)
+            } ?: return
+
+        queue.getHandle().remove(uniqueId)
+        queue.pushDataUpdates()
     }
 
+    @Subscribe("queue-add")
+    fun onQueueAdd(message: Message)
+    {
+        val queues = CougarSettingsProcessor
+            .locate<CougarQueueSettings>()!!
+        val serverId = message["serverId"]
+
+        val uniqueId = UUID
+            .fromString(message["uniqueId"])
+            ?: return
+
+        val queue = queues.queues.firstOrNull {
+            it.targetServerId.equals(serverId, true)
+        } ?: return
+
+        if (!queue.getHandle().contains(uniqueId))
+        {
+            queue.getHandle().add(uniqueId)
+            queue.pushDataUpdates()
+        }
+    }
 }

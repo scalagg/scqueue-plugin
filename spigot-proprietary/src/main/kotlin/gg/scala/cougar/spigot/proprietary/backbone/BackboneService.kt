@@ -11,6 +11,7 @@ import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import net.evilblock.cubed.serializers.Serializers
 import org.bukkit.Bukkit
+import java.lang.reflect.Type
 import java.util.*
 
 /**
@@ -20,7 +21,7 @@ import java.util.*
 @Service
 object BackboneService
 {
-    val typeToken = object : TypeToken<Map<UUID, String>>() {}.type
+    private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
 
     val banana = Banana(
         BananaCredentials(),
@@ -31,11 +32,20 @@ object BackboneService
         )
     )
 
+    private val bukkitBackbone = Banana(
+        BananaCredentials(),
+        BananaOptions(
+            channel = "cougar:backbone:bukkit",
+            gson = Serializers.gson,
+            executor = ScCougarServerMessageProducer.executor
+        )
+    )
+
     @Configure
     fun configure()
     {
-        banana.registerClass(this)
-        banana.subscribe()
+        bukkitBackbone.registerClass(this)
+        bukkitBackbone.subscribe()
     }
 
     @Subscribe("queue-update-stream")

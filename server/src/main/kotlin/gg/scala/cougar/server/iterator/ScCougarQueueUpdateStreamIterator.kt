@@ -92,6 +92,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 "queueId" to queue.targetServerId,
                 "messages" to serializedMessageMap
             ).dispatch(
+                "cougar:backbone:bukkit",
                 ScCougarServerMessageProducer.banana
             )
         }
