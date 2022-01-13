@@ -14,6 +14,7 @@ import net.evilblock.cubed.command.manager.CubedCommandManager
 import net.evilblock.cubed.util.CC
 import org.bukkit.ChatColor
 
+
 /**
  * @author GrowlyX
  * @since 1/12/2022
@@ -48,7 +49,15 @@ object CommandService
 
         Lemon.instance.registerCompletionsAndContexts(manager)
 
-        manager.registerCommand(JoinQueueCommand)
+        if (Lemon.instance.settings.id.contains("hub"))
+        {
+            manager.registerCommand(JoinQueueCommand)
+        } else
+        {
+            Lemon.instance.localInstance
+                .metaData["joinable"] = "false"
+        }
+
         manager.registerCommand(LeaveQueueCommand)
     }
 }
