@@ -1,6 +1,7 @@
 package gg.scala.cougar.spigot.proprietary.command.impl
 
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
+import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import net.evilblock.cubed.acf.BaseCommand
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.acf.annotation.CommandAlias
@@ -18,9 +19,15 @@ object JoinQueueCommand : BaseCommand()
     @CommandPermission("cougar.command.joinqueue")
     fun onJoinQueue(player: Player, wrapper: CougarQueueWrapper)
     {
-        if (wrapper.isInQueue(player.uniqueId))
+        val engine = ScalaCougarSpigotProprietaryEngine
+
+        if (
+            engine.queueLayer.localCache.values.any {
+                it.isInQueue(player.uniqueId)
+            }
+        )
         {
-            throw ConditionFailedException("You're already queued for ${CC.YELLOW}${wrapper.fancyDisplayName}${CC.RED}.")
+            throw ConditionFailedException("You're already queued for a server.")
         }
 
 
