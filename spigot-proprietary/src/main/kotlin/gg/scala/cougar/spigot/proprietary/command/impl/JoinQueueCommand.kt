@@ -3,11 +3,13 @@ package gg.scala.cougar.spigot.proprietary.command.impl
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
+import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionMappings
 import net.evilblock.cubed.acf.BaseCommand
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.acf.annotation.CommandAlias
 import net.evilblock.cubed.acf.annotation.CommandPermission
 import net.evilblock.cubed.util.CC
+import net.evilblock.cubed.util.nms.MinecraftProtocol
 import org.bukkit.entity.Player
 
 /**
@@ -29,6 +31,18 @@ object JoinQueueCommand : BaseCommand()
         )
         {
             throw ConditionFailedException("You're already queued for a server.")
+        }
+
+        val pVersion = MinecraftProtocol.getPlayerVersion(player)
+
+        if (server.allowedProtocols.contains(pVersion))
+        {
+            throw ConditionFailedException("You can only join this queue if you're on: ${
+                server.allowedProtocols
+                    .joinToString { 
+                        ProtocolVersionMappings.fromInternal(it).fancy()
+                    }
+            }.")
         }
 
         ScCougarServerMessageProducer.produce(

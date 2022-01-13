@@ -1,16 +1,12 @@
 package gg.scala.cougar.common
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
-import gg.scala.banana.Banana
 import gg.scala.banana.annotate.Subscribe
-import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.message.Message
-import gg.scala.banana.options.BananaOptions
 import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
-import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions

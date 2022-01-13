@@ -7,7 +7,6 @@ import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.inject.Inject
 import gg.scala.store.storage.type.DataStoreStorageType
-import net.evilblock.cubed.serializers.Serializers
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -17,7 +16,9 @@ import java.util.concurrent.CompletableFuture
  */
 class PrimaryCougarQueue(
     val targetServerId: String,
-    val fancyDisplayName: String
+    val fancyDisplayName: String,
+    val allowedProtocols: List<Int> =
+        mutableListOf(47)
 ) : Queue<UUID>(
     PrimaryCougarQueueComparator
 )
@@ -30,7 +31,7 @@ class PrimaryCougarQueue(
     {
         val wrapped = CougarQueueWrapper(
             targetServerId, fancyDisplayName, LinkedList<UUID>().also { it.addAll(getHandle()) },
-            ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
+            allowedProtocols, ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
         )
 
         return ScCougarPlatform.INSTANCE.queueLayer

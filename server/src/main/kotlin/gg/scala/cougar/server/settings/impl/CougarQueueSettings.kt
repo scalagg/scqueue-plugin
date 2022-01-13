@@ -9,7 +9,7 @@ import gg.scala.cougar.server.settings.CougarSettingsModel
  */
 class CougarQueueSettings(
     val queues: List<PrimaryCougarQueue> = mutableListOf(
-        PrimaryCougarQueue("something", "Something Queue")
+        PrimaryCougarQueue("something", "Something Queue", listOf(5, 47))
     )
 ) : CougarSettingsModel()
 {
