@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service
+@Service("Queue Iterator")
 @IgnoreAutoScan
 object ScCougarQueueIterator : Runnable
 {

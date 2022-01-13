@@ -1,9 +1,6 @@
 package gg.scala.cougar.common.queue
 
-import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
 /**
  * Wraps a java [PriorityQueue].

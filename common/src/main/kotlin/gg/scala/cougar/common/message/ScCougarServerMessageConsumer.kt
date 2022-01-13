@@ -13,7 +13,7 @@ import net.evilblock.cubed.serializers.Serializers
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service
+@Service("Message Consumer")
 @IgnoreAutoScan
 object ScCougarServerMessageConsumer : BananaHandler
 {

@@ -7,7 +7,8 @@ import gg.scala.cougar.server.settings.CougarSettingsModel
  * @since 1/12/2022
  */
 class CougarIterationSettings(
-    val iterationDelay: Long = 100L
+    val iterationDelay: Long = 250L,
+    val updateStreamIterationDelay: Long = 5000L,
 ) : CougarSettingsModel()
 {
     override fun getAbstractType() = this::class.java

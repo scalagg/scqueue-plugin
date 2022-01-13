@@ -101,7 +101,14 @@ object ScCougarServerBootstrap : ScCougarPlatform()
         }
 
         Runtime.getRuntime()
-            .addShutdownHook(thread { close() })
+            .addShutdownHook(
+                object : Thread() {
+                    override fun run()
+                    {
+                        close()
+                    }
+                }
+            )
 
         LOGGER.info("Finished startup in ${System.currentTimeMillis() - startup}ms (${
             (System.currentTimeMillis() - startup) / 1000

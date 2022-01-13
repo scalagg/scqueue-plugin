@@ -10,6 +10,25 @@ import java.util.*
 class CougarQueueWrapper(
     val serverId: String,
     val fancyDisplayName: String,
-    val players: PriorityQueue<UUID>,
+    private val priorityQueue: PriorityQueue<UUID>,
     override val identifier: UUID = UUID.randomUUID(),
 ) : IDataStoreObject
+{
+    fun isInQueue(t: UUID) = priorityQueue.contains(t)
+    fun sizeOfQueue() = priorityQueue.size
+
+    fun getPosition(t: UUID): Int
+    {
+        val copyOfQueue = PriorityQueue(priorityQueue)
+
+        for (index in 0..priorityQueue.size)
+        {
+            if (copyOfQueue.poll() == t)
+            {
+                return index + 1
+            }
+        }
+
+        return -1
+    }
+}
