@@ -1,0 +1,8 @@
+{
+  "queues": [
+    {
+      "targetServerId": "something",
+      "fancyDisplayName": "Something Queue"
+    }
+  ]
+}

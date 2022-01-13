@@ -4,21 +4,9 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.0'
 }
 
-def gitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-
-    return stdout.toString()
-            .trim().toString()
-} as String
-
 allprojects {
     group 'gg.scala.cougar'
-    version gitHash
+    version "1.0.0"
 
     repositories {
         mavenCentral()

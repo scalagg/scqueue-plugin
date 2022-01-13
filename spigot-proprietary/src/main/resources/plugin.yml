@@ -1,0 +1,8 @@
+name: cougar
+main: gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryPlugin
+version: 1.0.0-pty
+
+author: Scala
+website: https://scala.gg
+
+depend: [Lemon, helper, Cubed]
