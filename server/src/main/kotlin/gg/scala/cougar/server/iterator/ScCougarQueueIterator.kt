@@ -34,11 +34,7 @@ object ScCougarQueueIterator : Runnable
     @Configure
     fun configure()
     {
-        val executor = Executors.newScheduledThreadPool(1,
-            ThreadFactoryBuilder()
-                .setNameFormat("Queue Iterator #%d")
-                .build()
-        )
+        val executor = Executors.newScheduledThreadPool(1)
 
         executor.scheduleAtFixedRate(
             this, 0L,
@@ -48,6 +44,17 @@ object ScCougarQueueIterator : Runnable
     }
 
     override fun run()
+    {
+        try
+        {
+            tick()
+        } catch (e: Exception)
+        {
+            e.printStackTrace()
+        }
+    }
+
+    private fun tick()
     {
         for (queue in settings.queues)
         {

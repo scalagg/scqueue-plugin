@@ -36,11 +36,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
     @Configure
     fun configure()
     {
-        val executor = Executors.newScheduledThreadPool(1,
-            ThreadFactoryBuilder()
-                .setNameFormat("Queue Update Stream #%d")
-                .build()
-        )
+        val executor = Executors.newScheduledThreadPool(1)
 
         executor.scheduleAtFixedRate(
             this, 0L,
@@ -49,7 +45,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
         )
     }
 
-    override fun run()
+    fun tick()
     {
         for (queue in queues.queues)
         {
@@ -94,6 +90,17 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 "cougar:bukkit",
                 ScCougarServerMessageProducer.banana
             )
+        }
+    }
+
+    override fun run()
+    {
+        try
+        {
+            tick()
+        } catch (e: Exception)
+        {
+            e.printStackTrace()
         }
     }
 }
