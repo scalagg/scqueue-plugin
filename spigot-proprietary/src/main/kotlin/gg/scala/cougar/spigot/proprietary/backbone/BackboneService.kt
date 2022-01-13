@@ -7,9 +7,13 @@ import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.message.Message
 import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
+import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import net.evilblock.cubed.serializers.Serializers
+import net.evilblock.cubed.util.CC
+import net.evilblock.cubed.util.bukkit.Tasks
+import net.evilblock.cubed.util.bungee.BungeeUtil
 import org.bukkit.Bukkit
 import java.lang.reflect.Type
 import java.util.*
@@ -46,6 +50,31 @@ object BackboneService
     {
         bukkitBackbone.registerClass(this)
         bukkitBackbone.subscribe()
+    }
+
+    @Subscribe("send-player")
+    fun onSendPlayer(message: Message)
+    {
+        val uniqueId = UUID.fromString(
+            message["uniqueId"]
+        ) ?: return
+
+        val serverId = message["serverId"]!!
+        val engine = ScalaCougarSpigotProprietaryEngine
+
+        val queue = engine.queueLayer.localCache.values
+            .firstOrNull {
+                it.serverId.equals(serverId, true)
+            } ?: return
+
+        Bukkit.getPlayer(uniqueId)?.apply {
+            Tasks.delayed(1L)
+            {
+                sendMessage("${CC.GREEN}You're now being sent to ${CC.YELLOW}${queue.fancyDisplayName}${CC.GREEN}.")
+
+                BungeeUtil.sendToServer(this, serverId)
+            }
+        }
     }
 
     @Subscribe("queue-update-stream")

@@ -85,10 +85,11 @@ object ScCougarQueueIterator : Runnable
                 queue.getHandle().remove(uniqueId)
 
                 ScCougarServerMessageProducer.produce(
-                    "send_player",
+                    "send-player",
                     "uniqueId" to uniqueId,
                     "serverId" to queue.targetServerId
                 ).dispatch(
+                    "cougar:backbone:bukkit",
                     ScCougarServerMessageProducer.banana
                 )
 
