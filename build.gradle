@@ -55,5 +55,5 @@ subprojects {
         }
     }
 
-    tasks.build.dependsOn(shadowJar, publishing)
+    tasks.build.dependsOn(shadowJar)
 }
