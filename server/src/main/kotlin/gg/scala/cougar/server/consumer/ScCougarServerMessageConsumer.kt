@@ -67,7 +67,7 @@ object ScCougarServerMessageConsumer : BananaHandler
             .remove(uniqueId)
     }
 
-    @Subscribe("queue-add")
+    @Subscribe("queue-remove")
     fun onQueueRemove(message: Message)
     {
         val queues = CougarSettingsProcessor

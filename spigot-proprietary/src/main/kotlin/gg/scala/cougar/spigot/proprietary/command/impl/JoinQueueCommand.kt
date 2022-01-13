@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot.proprietary.command.impl
 
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import net.evilblock.cubed.acf.BaseCommand
@@ -30,6 +31,16 @@ object JoinQueueCommand : BaseCommand()
             throw ConditionFailedException("You're already queued for a server.")
         }
 
+        ScCougarServerMessageProducer.produce(
+            "queue-add",
+            "serverId" to wrapper.serverId,
+            "uniqueId" to player.uniqueId
+        ).dispatch(
+            ScCougarServerMessageProducer.banana
+        )
 
+        player.sendMessage("${CC.GREEN}You've been added to the ${CC.YELLOW}${
+            wrapper.fancyDisplayName
+        }${CC.GREEN} queue.")
     }
 }
