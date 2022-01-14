@@ -140,7 +140,7 @@ abstract class ScCougarPlatform
         if (shouldTrackInstance())
         {
             instanceLayer.delete(
-                queueDatabaseIds[getLocalInstance().serverId]!!,
+                getLocalInstance().identifier,
                 DataStoreStorageType.REDIS
             ).join()
         }
