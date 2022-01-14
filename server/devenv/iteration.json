@@ -1,3 +1,4 @@
 {
-  "iterationDelay": 250
+  "iterationDelay": 250,
+  "updateStreamIterationDelay": 5000
 }

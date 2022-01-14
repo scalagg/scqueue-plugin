@@ -7,6 +7,7 @@ import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.server.iterator.ScCougarQueueIterator
 import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
+import gg.scala.cougar.server.console.ConsoleChatColor
 import gg.scala.cougar.server.iterator.ScCougarQueueUpdateStreamIterator
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
@@ -18,6 +19,10 @@ import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
 import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
+import revxrsal.commands.annotation.Command
+import revxrsal.commands.cli.ConsoleActor
+import revxrsal.commands.cli.ConsoleCommandHandler
+import revxrsal.commands.cli.core.CLIHandler
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -42,6 +47,50 @@ object ScCougarServerBootstrap : ScCougarPlatform()
         LOGGER.info("Starting cougar server...")
 
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreStandaloneImpl
+
+        val commandHandler = ConsoleCommandHandler.create()
+        commandHandler.register(object {
+            @Command("reload-config")
+            fun onReloadConfig(actor: ConsoleActor)
+            {
+                val start = System.currentTimeMillis()
+
+                CougarSettingsProcessor.loadSettings<CougarLanguageSettings>("language")
+                CougarSettingsProcessor.loadSettings<CougarQueueSettings>("queues")
+                CougarSettingsProcessor.loadSettings<CougarIterationSettings>("iteration")
+
+                actor.reply("${ConsoleChatColor.GREEN}Finished reload in ${ConsoleChatColor.YELLOW}${System.currentTimeMillis() - start}ms${ConsoleChatColor.GREEN}.")
+            }
+
+            @Command("queues")
+            fun onQueues(actor: ConsoleActor)
+            {
+                CougarSettingsProcessor.locate<CougarQueueSettings>()!!.apply {
+                    actor.reply("${
+                        ConsoleChatColor.YELLOW
+                    }Queues: ${
+                        ConsoleChatColor.CYAN
+                    }${
+                        queues.joinToString { it.fancyDisplayName + " (${it.targetServerId})" }
+                    }${
+                        ConsoleChatColor.YELLOW
+                    }.")
+                }
+            }
+        })
+
+        thread {
+            while (true)
+            {
+                try
+                {
+                    commandHandler.pollInput()
+                } catch (e: Exception)
+                {
+                    e.printStackTrace()
+                }
+            }
+        }
 
         CougarSettingsProcessor.configure()
         CougarSettingsProcessor.loadSettings<CougarLanguageSettings>("language")
