@@ -69,7 +69,7 @@ object ScCougarServerBootstrap : ScCougarPlatform()
                     actor.reply("${
                         ConsoleChatColor.YELLOW
                     }Queues: ${
-                        ConsoleChatColor.CYAN
+                        ConsoleChatColor.CYAN_BOLD_BRIGHT
                     }${
                         queues.joinToString { it.fancyDisplayName + " (${it.targetServerId})" }
                     }${
