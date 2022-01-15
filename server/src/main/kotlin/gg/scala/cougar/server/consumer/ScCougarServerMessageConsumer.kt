@@ -76,13 +76,30 @@ object ScCougarServerMessageConsumer : BananaHandler
             .fromString(message["uniqueId"])
             ?: return
 
-        val queue = queues.queues
-            .firstOrNull {
-                it.getHandle().contains(uniqueId)
-            } ?: return
+        val queueId = message["queueId"]
 
-        queue.getHandle().remove(uniqueId)
-        queue.pushDataUpdates()
+        if (queueId == null)
+        {
+            val queue = queues.queues
+                .filter {
+                    it.isInQueue(uniqueId)
+                }
+
+            for (cougarQueue in queue)
+            {
+                cougarQueue.getHandle().remove(uniqueId)
+                cougarQueue.pushDataUpdates()
+            }
+        } else
+        {
+            val queue = queues.queues
+                .firstOrNull {
+                    it.targetServerId == queueId
+                } ?: return
+
+            queue.getHandle().remove(uniqueId)
+            queue.pushDataUpdates()
+        }
     }
 
     @Subscribe("queue-add")

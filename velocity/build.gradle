@@ -3,7 +3,9 @@ repositories {
 }
 
 dependencies {
+    implementation fileTree("internal")
     implementation project(":common")
+
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
 
     compileOnly 'com.github.scalagg.scala-store:shared:3af8d2d9fe'
