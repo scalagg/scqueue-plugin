@@ -3,7 +3,7 @@
     {
       "targetServerId": "something",
       "fancyDisplayName": "Something Queue",
-      "allowedProtocols": null
+      "allowedProtocols": [5, 47]
     }
   ]
 }

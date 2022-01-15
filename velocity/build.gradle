@@ -1,0 +1,11 @@
+repositories {
+    maven { url "https://nexus.velocitypowered.com/repository/maven-public/" }
+}
+
+dependencies {
+    implementation project(":common")
+    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
+
+    compileOnly 'com.github.scalagg.scala-store:shared:3af8d2d9fe'
+    compileOnly 'com.github.scalagg.scala-store:velocity:3af8d2d9fe'
+}

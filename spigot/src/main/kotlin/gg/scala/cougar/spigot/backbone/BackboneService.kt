@@ -35,7 +35,6 @@ object BackboneService
         BananaCredentials(),
         BananaOptions(
             channel = "cougar:backbone",
-            gson = Serializers.gson,
             executor = ScCougarServerMessageProducer.executor
         )
     )
@@ -50,7 +49,6 @@ object BackboneService
             BananaCredentials(),
             BananaOptions(
                 channel = "cougar:bukkit",
-                gson = Serializers.gson,
                 executor = ScCougarServerMessageProducer.executor
             )
         )

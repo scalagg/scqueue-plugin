@@ -1,5 +1,5 @@
 {
-  "updateMessage": "\n§eYou\u0027re position §b{pos}§e/§b{max}§e in the §b{queue}§e queue.\n§7Ranks get a higher priority in queues: §f§ostore.verio.cc",
-  "whitelistedAddition": "§cThe server you\u0027re queued for is currently whitelisted.",
-  "offlineAddition": "§cThe server you\u0027re queued for is currently offline."
+  "updateMessage": "\n§eYou're position §b{pos}§e/§b{max}§e in the §b{queue}§e queue.\n§7Ranks get a higher priority in queues: §f§ostore.some.server",
+  "whitelistedAddition": "§cThe server you're queued for is currently whitelisted.",
+  "offlineAddition": "§cThe server you're queued for is currently offline."
 }

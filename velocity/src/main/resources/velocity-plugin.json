@@ -1,0 +1,11 @@
+{
+  "id": "cougar",
+  "name": "cougar",
+  "version": "1.0.0",
+  "url": "https://scala.gg/",
+  "authors": [
+    "GrowlyX", "rawr"
+  ],
+  "dependencies": [],
+  "main": "gg.scala.cougar.velocity.ScalaCougarVelocityPlugin"
+}
