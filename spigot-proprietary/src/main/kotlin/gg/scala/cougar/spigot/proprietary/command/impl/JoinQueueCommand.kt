@@ -5,12 +5,10 @@ import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import gg.scala.cougar.spigot.proprietary.command.CommandService
 import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionMappings
-import net.evilblock.cubed.acf.BaseCommand
-import net.evilblock.cubed.acf.ConditionFailedException
-import net.evilblock.cubed.acf.annotation.CommandAlias
-import net.evilblock.cubed.acf.annotation.CommandPermission
-import net.evilblock.cubed.util.CC
-import net.evilblock.cubed.util.nms.MinecraftProtocol
+import co.aikar.commands.BaseCommand
+import co.aikar.commands.ConditionFailedException
+import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandPermission
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 

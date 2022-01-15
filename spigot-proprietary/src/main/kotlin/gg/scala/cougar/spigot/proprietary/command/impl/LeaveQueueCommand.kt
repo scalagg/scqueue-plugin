@@ -2,10 +2,10 @@ package gg.scala.cougar.spigot.proprietary.command.impl
 
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
-import net.evilblock.cubed.acf.BaseCommand
-import net.evilblock.cubed.acf.ConditionFailedException
-import net.evilblock.cubed.acf.annotation.CommandAlias
-import net.evilblock.cubed.acf.annotation.CommandPermission
+import co.aikar.commands.BaseCommand
+import co.aikar.commands.ConditionFailedException
+import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandPermission
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -15,15 +15,6 @@ import org.bukkit.entity.Player
  */
 object LeaveQueueCommand : BaseCommand()
 {
-    @CommandAlias("queuetest")
-    @CommandPermission("op")
-    fun onTest(player: Player)
-    {
-        player.sendMessage(
-            ScalaCougarSpigotProprietaryEngine.queueLayer.localCache.values.joinToString { it.fancyDisplayName }
-        )
-    }
-
     @CommandAlias("leaveq|leavequeue")
     @CommandPermission("cougar.command.leavequeue")
     fun onJoinQueue(player: Player)

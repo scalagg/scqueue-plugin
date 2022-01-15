@@ -6,6 +6,9 @@ import gg.scala.cougar.spigot.proprietary.protocol.impl.CubedVersionProvider
 import gg.scala.cougar.spigot.proprietary.protocol.impl.ViaVersionProvider
 import gg.scala.cougar.spigot.proprietary.provider.PlayerPriorityProvider
 import gg.scala.cougar.spigot.proprietary.provider.impl.LemonPlayerPriorityProvider
+import gg.scala.cougar.spigot.proprietary.server.ServerDetailsProvider
+import gg.scala.cougar.spigot.proprietary.server.impl.DefaultServerDetailsProvider
+import gg.scala.cougar.spigot.proprietary.server.impl.LemonServerDetailsProvider
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
 import me.lucko.helper.plugin.ExtendedJavaPlugin
@@ -19,6 +22,7 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
 {
     lateinit var priorityProvider: PlayerPriorityProvider
     lateinit var protocolVersionProvider: ProtocolVersionProvider
+    lateinit var serverDetailsProvider: ServerDetailsProvider
 
     override fun enable()
     {
@@ -41,6 +45,11 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
         if (Bukkit.getPluginManager().getPlugin("Lemon") != null)
         {
             priorityProvider = LemonPlayerPriorityProvider()
+            serverDetailsProvider = LemonServerDetailsProvider()
+        } else
+        {
+            serverDetailsProvider = DefaultServerDetailsProvider
+                .also { it.configure(this) }
         }
 
         if (Bukkit.getPluginManager().getPlugin("Cubed") != null)

@@ -3,9 +3,7 @@ package gg.scala.cougar.spigot.proprietary.caching.impl
 import gg.scala.banana.Banana
 import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.options.BananaOptions
-import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import gg.scala.cougar.spigot.proprietary.caching.UuidCacheProvider
-import net.evilblock.cubed.Cubed
 import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
 
 /**

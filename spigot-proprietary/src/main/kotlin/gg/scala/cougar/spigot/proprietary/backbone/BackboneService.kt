@@ -29,8 +29,7 @@ import java.util.*
 @IgnoreAutoScan
 object BackboneService
 {
-    private val typeToken: Type = object : TypeToken<Map<UUID, String>>()
-    {}.type
+    private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
 
     val banana = Banana(
         BananaCredentials(),

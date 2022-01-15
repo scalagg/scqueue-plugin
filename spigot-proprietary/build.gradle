@@ -1,5 +1,6 @@
 repositories {
     maven { url "https://repo.viaversion.com" }
+    maven { url "https://repo.aikar.co/content/groups/aikar/" }
 }
 
 dependencies {
@@ -10,6 +11,8 @@ dependencies {
 
     compileOnly fileTree("library")
     compileOnly "me.lucko:helper:5.6.8"
+
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 
     compileOnly "com.viaversion:viaversion-api:4.1.1"
 }

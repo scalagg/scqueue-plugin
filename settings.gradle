@@ -1,7 +1,5 @@
 rootProject.name = 'scala-cougar'
 include "common"
-include "spigot"
-include "velocity"
 include "server"
 include 'spigot-proprietary'
 
