@@ -4,10 +4,10 @@ import gg.scala.banana.Banana
 import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.server.iterator.ScCougarQueueIterator
-import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.server.console.ConsoleChatColor
+import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
+import gg.scala.cougar.server.iterator.ScCougarQueueIterator
 import gg.scala.cougar.server.iterator.ScCougarQueueUpdateStreamIterator
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
@@ -22,12 +22,12 @@ import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.cli.ConsoleActor
 import revxrsal.commands.cli.ConsoleCommandHandler
-import revxrsal.commands.cli.core.CLIHandler
-import java.lang.Thread.sleep
+import java.lang.management.ManagementFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Logger
 import kotlin.concurrent.thread
+import kotlin.math.pow
 
 /**
  * @author GrowlyX
@@ -60,6 +60,15 @@ object ScCougarServerBootstrap : ScCougarPlatform()
                 CougarSettingsProcessor.loadSettings<CougarIterationSettings>("iteration")
 
                 actor.reply("${ConsoleChatColor.GREEN}Finished reload in ${ConsoleChatColor.YELLOW}${System.currentTimeMillis() - start}ms${ConsoleChatColor.GREEN}.")
+            }
+
+            @Command("tps")
+            fun onTps(actor: ConsoleActor)
+            {
+                actor.reply("${ConsoleChatColor.RED}So, we don't have a TPS, but here's memory usage!")
+                actor.reply("${ConsoleChatColor.GREEN_BOLD}${
+                    (ManagementFactory.getMemoryMXBean().heapMemoryUsage.used / (1024.0.pow(2.0))).toInt()
+                }mb")
             }
 
             @Command("queues")

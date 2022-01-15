@@ -3,6 +3,7 @@ package gg.scala.cougar.spigot.proprietary.command.impl
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
+import gg.scala.cougar.spigot.proprietary.command.CommandService
 import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionMappings
 import net.evilblock.cubed.acf.BaseCommand
 import net.evilblock.cubed.acf.ConditionFailedException
@@ -33,7 +34,9 @@ object JoinQueueCommand : BaseCommand()
             throw ConditionFailedException("You're already queued for a server.")
         }
 
-        val pVersion = MinecraftProtocol.getPlayerVersion(player)
+        val pVersion = CommandService.plugin
+            .protocolVersionProvider
+            .getProtocolVersion(player)
 
         if (!server.allowedProtocols.contains(pVersion))
         {

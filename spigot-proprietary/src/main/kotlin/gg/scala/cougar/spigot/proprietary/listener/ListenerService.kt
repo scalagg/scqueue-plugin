@@ -7,10 +7,7 @@ import gg.scala.cougar.spigot.proprietary.backbone.BackboneService
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.lemon.Lemon
-import gg.scala.lemon.handler.PlayerHandler
 import me.lucko.helper.Events
-import net.evilblock.cubed.util.bukkit.Tasks
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.concurrent.ForkJoinPool
@@ -33,8 +30,7 @@ object ListenerService
         Events.subscribe(PlayerJoinEvent::class.java)
             .handler {
                 engine.loadPlayerResources(it.player.uniqueId).thenAccept { player ->
-                    player.priority = PlayerHandler.findPlayer(it.player.uniqueId)
-                        .orElse(null).activeGrant!!.getRank().weight
+                    player.priority = plugin.priorityProvider.getPriority(it.player)
 
                     player.save().thenRun {
                         ScCougarServerMessageProducer.produce(
