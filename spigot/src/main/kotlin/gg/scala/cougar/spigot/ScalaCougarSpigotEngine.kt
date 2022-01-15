@@ -27,6 +27,7 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
     @Configure
     override fun configure()
     {
+        super.setupLayers()
         super.configure()
 
         val databaseId = instanceLayer

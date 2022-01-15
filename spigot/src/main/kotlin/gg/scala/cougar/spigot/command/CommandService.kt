@@ -39,9 +39,13 @@ object CommandService
                 )
         }
 
-        val serverId = plugin.serverDetailsProvider.getServerName()
+        val serverId = plugin.serverDetailsProvider
+            .getServerName().lowercase()
 
-        if (serverId.lowercase().contains("hub"))
+        if (
+            serverId.contains("hub") ||
+            serverId.contains("lobby")
+        )
         {
             manager.registerCommand(JoinQueueCommand)
         }

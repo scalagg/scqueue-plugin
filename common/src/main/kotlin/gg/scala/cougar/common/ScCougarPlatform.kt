@@ -70,15 +70,18 @@ abstract class ScCougarPlatform
         playerLayer.delete(uniqueId, DataStoreStorageType.REDIS).join()
     }
 
+    fun setupLayers()
+    {
+        playerLayer = DataStoreObjectControllerCache.create(Serializers.gson)
+        instanceLayer = DataStoreObjectControllerCache.create(Serializers.gson)
+        queueLayer = DataStoreObjectControllerCache.create(Serializers.gson)
+    }
+
     open fun configure()
     {
         INSTANCE = this
 
         flavor.bind<ScCougarPlatform>() to this
-
-        playerLayer = DataStoreObjectControllerCache.create(Serializers.gson)
-        instanceLayer = DataStoreObjectControllerCache.create(Serializers.gson)
-        queueLayer = DataStoreObjectControllerCache.create(Serializers.gson)
 
         flavor.bind<DataStoreObjectController<ScCougarPlayer>>() to playerLayer
         flavor.bind<DataStoreObjectController<ScCougarInstance>>() to instanceLayer

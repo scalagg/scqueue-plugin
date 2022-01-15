@@ -1,6 +1,6 @@
 name: cougar
 main: gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
-version: 1.0.0-pty
+version: 1.0.0
 
 author: Scala
 website: https://scala.gg

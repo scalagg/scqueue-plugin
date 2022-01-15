@@ -6,6 +6,6 @@
   "authors": [
     "GrowlyX", "rawr"
   ],
-  "dependencies": [],
+  "dependencies": [{"id":"store-velocity","optional":false}],
   "main": "gg.scala.cougar.velocity.ScalaCougarVelocityPlugin"
 }

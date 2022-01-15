@@ -41,7 +41,10 @@ object ScCougarServerBootstrap : ScCougarPlatform()
             )
 
         CougarSettingsProcessor
-            .configure(); configure()
+            .configure();
+
+        setupLayers()
+        configure()
 
         injectServices()
 

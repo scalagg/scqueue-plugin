@@ -5,6 +5,7 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
+import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -18,7 +19,7 @@ object LeaveQueueCommand : BaseCommand()
     @CommandPermission("cougar.command.leavequeue")
     fun onJoinQueue(player: Player)
     {
-        val engine = gg.scala.cougar.spigot.ScalaCougarSpigotEngine
+        val engine = ScalaCougarSpigotEngine
 
         val queued = engine.queueLayer.localCache.values
             .firstOrNull { it.isInQueue(player.uniqueId) }

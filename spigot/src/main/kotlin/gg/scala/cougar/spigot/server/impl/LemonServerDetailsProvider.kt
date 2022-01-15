@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 class LemonServerDetailsProvider : ServerDetailsProvider
 {
-    override fun getServerName() = LemonConstants.SERVER_NAME
+    override fun getServerName() = Lemon.instance.settings.id
 
     override fun updateMetaData(plugin: JavaPlugin)
     {
