@@ -3,7 +3,8 @@ package gg.scala.cougar.spigot.command
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.PaperCommandManager
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
-import gg.scala.cougar.spigot.ScalaCougarSpigotProprietaryPlugin
+import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
+import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.command.impl.LeaveQueueCommand
 import gg.scala.flavor.inject.Inject
@@ -19,12 +20,12 @@ import org.bukkit.ChatColor
 object CommandService
 {
     @Inject
-    lateinit var plugin: ScalaCougarSpigotProprietaryPlugin
+    lateinit var plugin: ScalaCougarSpigotPlugin
 
     @Configure
     fun configure()
     {
-        val engine = gg.scala.cougar.spigot.ScalaCougarSpigotEngine
+        val engine = ScalaCougarSpigotEngine
         val manager = PaperCommandManager(plugin)
 
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
