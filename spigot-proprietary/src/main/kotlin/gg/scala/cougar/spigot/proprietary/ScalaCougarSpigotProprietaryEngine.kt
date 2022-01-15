@@ -2,11 +2,12 @@ package gg.scala.cougar.spigot.proprietary
 
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
+import gg.scala.cougar.spigot.proprietary.caching.UuidCacheProvider
+import gg.scala.cougar.spigot.proprietary.caching.impl.CubedUuidCacheProvider
+import gg.scala.cougar.spigot.proprietary.caching.impl.DefaultUuidCacheProvider
 import gg.scala.lemon.Lemon
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
-import net.evilblock.cubed.Cubed
-import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
 import org.bukkit.Bukkit
 import java.util.*
 
@@ -17,6 +18,7 @@ import java.util.*
 object ScalaCougarSpigotProprietaryEngine : ScCougarPlatform()
 {
     private lateinit var instance: ScCougarInstance
+    private lateinit var uuidCacheProvider: UuidCacheProvider
 
     override fun configure()
     {
@@ -35,6 +37,9 @@ object ScalaCougarSpigotProprietaryEngine : ScCougarPlatform()
         instance = ScCougarInstance(
             Lemon.instance.settings.id, databaseId
         )
+
+        uuidCacheProvider = if (Bukkit.getPluginManager().getPlugin("Cubed") != null)
+            CubedUuidCacheProvider() else DefaultUuidCacheProvider
     }
 
     override fun updateLocalInstance()
@@ -52,6 +57,5 @@ object ScalaCougarSpigotProprietaryEngine : ScCougarPlatform()
     override fun getLocalInstance() = instance
     override fun shouldTrackInstance() = true
 
-    override fun getUuidCache() =
-        Cubed.instance.uuidCache as RedisUUIDCache
+    override fun getUuidCache() = uuidCacheProvider.getUuidCache()
 }

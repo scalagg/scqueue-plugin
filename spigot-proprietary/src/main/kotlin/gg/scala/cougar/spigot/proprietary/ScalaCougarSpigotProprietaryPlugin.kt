@@ -31,6 +31,13 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
         flavor.bind<ScalaCougarSpigotProprietaryPlugin>() to this
         flavor.startup()
 
+        registerProviders()
+
+        BackboneService.configure()
+    }
+
+    private fun registerProviders()
+    {
         if (Bukkit.getPluginManager().getPlugin("Lemon") != null)
         {
             priorityProvider = LemonPlayerPriorityProvider()
@@ -45,8 +52,6 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
         {
             protocolVersionProvider = ViaVersionProvider()
         }
-
-        BackboneService.configure()
     }
 
     override fun disable()
