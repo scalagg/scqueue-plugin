@@ -3,6 +3,7 @@ package gg.scala.cougar.spigot.proprietary
 import gg.scala.cougar.spigot.proprietary.backbone.BackboneService
 import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.proprietary.protocol.impl.CubedVersionProvider
+import gg.scala.cougar.spigot.proprietary.protocol.impl.ViaVersionProvider
 import gg.scala.cougar.spigot.proprietary.provider.PlayerPriorityProvider
 import gg.scala.cougar.spigot.proprietary.provider.impl.LemonPlayerPriorityProvider
 import gg.scala.flavor.Flavor
@@ -38,6 +39,11 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
         if (Bukkit.getPluginManager().getPlugin("Cubed") != null)
         {
             protocolVersionProvider = CubedVersionProvider()
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("ViaVersion") != null)
+        {
+            protocolVersionProvider = ViaVersionProvider()
         }
 
         BackboneService.configure()
