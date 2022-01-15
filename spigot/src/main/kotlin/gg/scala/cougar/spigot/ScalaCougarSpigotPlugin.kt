@@ -34,9 +34,9 @@ class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
         registerProviders()
 
         ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
-        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
 
-        BackboneService.configure()
+        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
+        ScalaCougarSpigotEngine.flavor.inject(BackboneService)
     }
 
     private fun registerProviders()

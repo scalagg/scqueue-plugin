@@ -26,6 +26,7 @@ import java.util.*
  * @since 1/12/2022
  */
 @Service
+@IgnoreAutoScan
 object BackboneService
 {
     private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
