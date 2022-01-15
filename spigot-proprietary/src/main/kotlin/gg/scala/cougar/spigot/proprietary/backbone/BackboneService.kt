@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot.proprietary.backbone
 
+import com.google.common.io.ByteStreams
 import com.google.gson.reflect.TypeToken
 import gg.scala.banana.Banana
 import gg.scala.banana.annotate.Subscribe
@@ -8,14 +9,15 @@ import gg.scala.banana.message.Message
 import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
+import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryPlugin
+import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import net.evilblock.cubed.serializers.Serializers
-import net.evilblock.cubed.util.CC
-import net.evilblock.cubed.util.bukkit.Tasks
-import net.evilblock.cubed.util.bungee.BungeeUtil
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.entity.Player
 import java.lang.reflect.Type
 import java.util.*
 
@@ -27,7 +29,8 @@ import java.util.*
 @IgnoreAutoScan
 object BackboneService
 {
-    private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
+    private val typeToken: Type = object : TypeToken<Map<UUID, String>>()
+    {}.type
 
     val banana = Banana(
         BananaCredentials(),
@@ -37,6 +40,9 @@ object BackboneService
             executor = ScCougarServerMessageProducer.executor
         )
     )
+
+    @Inject
+    lateinit var plugin: ScalaCougarSpigotProprietaryPlugin
 
     @Configure
     fun configure()
@@ -52,6 +58,8 @@ object BackboneService
 
         bukkitBackbone.registerClass(this)
         bukkitBackbone.subscribe()
+
+        plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
     }
 
     @Subscribe("send-player")
@@ -70,12 +78,10 @@ object BackboneService
             } ?: return
 
         Bukkit.getPlayer(uniqueId)?.apply {
-            Tasks.delayed(1L)
-            {
-                sendMessage("${CC.GREEN}You're now being sent to ${CC.YELLOW}${queue.fancyDisplayName}${CC.GREEN}.")
-
-                BungeeUtil.sendToServer(this, serverId)
-            }
+            plugin.server.scheduler.runTaskLater(plugin, {
+                sendMessage("${ChatColor.GREEN}You're now being sent to ${ChatColor.YELLOW}${queue.fancyDisplayName}${ChatColor.GREEN}.")
+                sendToServer(this, serverId)
+            }, 1L)
         }
     }
 
@@ -93,6 +99,21 @@ object BackboneService
                 ?: continue
 
             onlinePlayer.sendMessage(messageForPlayer)
+        }
+    }
+
+    private fun sendToServer(player: Player, server: String)
+    {
+        try
+        {
+            val out = ByteStreams.newDataOutput()
+            out.writeUTF("Connect")
+            out.writeUTF(server)
+
+            player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray())
+        } catch (e: Exception)
+        {
+            e.printStackTrace()
         }
     }
 }
