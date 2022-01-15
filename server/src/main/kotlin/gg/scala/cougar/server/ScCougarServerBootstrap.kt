@@ -1,33 +1,22 @@
 package gg.scala.cougar.server
 
-import gg.scala.banana.Banana
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.banana.options.BananaOptions
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
-import gg.scala.cougar.server.console.ConsoleChatColor
+import gg.scala.cougar.server.command.CommandService
 import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.cougar.server.iterator.ScCougarQueueIterator
 import gg.scala.cougar.server.iterator.ScCougarQueueUpdateStreamIterator
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
-import gg.scala.cougar.server.settings.impl.CougarIterationSettings
-import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.cougar.server.store.ScalaDataStoreStandaloneImpl
+import gg.scala.flavor.Flavor
+import gg.scala.flavor.FlavorOptions
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
-import net.evilblock.cubed.serializers.Serializers
-import net.evilblock.cubed.store.uuidcache.impl.RedisUUIDCache
-import revxrsal.commands.annotation.Command
-import revxrsal.commands.cli.ConsoleActor
-import revxrsal.commands.cli.ConsoleCommandHandler
-import java.lang.management.ManagementFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Logger
-import kotlin.concurrent.thread
-import kotlin.math.pow
 
 /**
  * @author GrowlyX
@@ -36,9 +25,7 @@ import kotlin.math.pow
 object ScCougarServerBootstrap : ScCougarPlatform()
 {
     @JvmStatic
-    val LOGGER: Logger = Logger.getAnonymousLogger()
-
-    private lateinit var stdUuidCache: RedisUUIDCache
+    val LOGGER: Logger = Logger.getLogger("ScCougarServerBootstrap")
 
     @JvmStatic
     fun main(args: Array<String>)
@@ -48,91 +35,37 @@ object ScCougarServerBootstrap : ScCougarPlatform()
 
         ScalaDataStoreShared.INSTANCE = ScalaDataStoreStandaloneImpl
 
-        val commandHandler = ConsoleCommandHandler.create()
-        commandHandler.register(object {
-            @Command("reload-config")
-            fun onReloadConfig(actor: ConsoleActor)
-            {
-                val start = System.currentTimeMillis()
-
-                CougarSettingsProcessor.loadSettings<CougarLanguageSettings>("language")
-                CougarSettingsProcessor.loadSettings<CougarQueueSettings>("queues")
-                CougarSettingsProcessor.loadSettings<CougarIterationSettings>("iteration")
-
-                actor.reply("${ConsoleChatColor.GREEN}Finished reload in ${ConsoleChatColor.YELLOW}${System.currentTimeMillis() - start}ms${ConsoleChatColor.GREEN}.")
-            }
-
-            @Command("tps")
-            fun onTps(actor: ConsoleActor)
-            {
-                actor.reply("${ConsoleChatColor.RED}So, we don't have a TPS, but here's memory usage!")
-                actor.reply("${ConsoleChatColor.GREEN_BOLD}${
-                    (ManagementFactory.getMemoryMXBean().heapMemoryUsage.used / (1024.0.pow(2.0))).toInt()
-                }mb")
-            }
-
-            @Command("queues")
-            fun onQueues(actor: ConsoleActor)
-            {
-                CougarSettingsProcessor.locate<CougarQueueSettings>()!!.apply {
-                    actor.reply("${
-                        ConsoleChatColor.YELLOW
-                    }Queues: ${
-                        ConsoleChatColor.CYAN_BOLD_BRIGHT
-                    }${
-                        queues.joinToString { it.fancyDisplayName + " (${it.targetServerId})" }
-                    }${
-                        ConsoleChatColor.YELLOW
-                    }.")
-                }
-            }
-        })
-
-        thread {
-            while (true)
-            {
-                try
-                {
-                    commandHandler.pollInput()
-                } catch (e: Exception)
-                {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        CougarSettingsProcessor.configure()
-        CougarSettingsProcessor.loadSettings<CougarLanguageSettings>("language")
-        CougarSettingsProcessor.loadSettings<CougarQueueSettings>("queues")
-        CougarSettingsProcessor.loadSettings<CougarIterationSettings>("iteration")
-
-        val banana = Banana(
-            BananaCredentials(),
-            BananaOptions(
-                channel = "cougar:uid_cache",
-                gson = Serializers.gson,
-                executor = executor
+        flavor = Flavor
+            .create<ScCougarServerBootstrap>(
+                FlavorOptions(LOGGER)
             )
+
+        CougarSettingsProcessor
+            .configure(); configure()
+
+        injectServices()
+
+        enableQueueUpdater()
+        enableShutdownHook()
+
+        LOGGER.info(
+            "Finished startup in ${System.currentTimeMillis() - startup}ms (${
+                (System.currentTimeMillis() - startup) / 1000
+            }s)."
         )
+    }
 
-        stdUuidCache = RedisUUIDCache(banana)
-        stdUuidCache.load()
-
-        flavor.bind<CougarLanguageSettings>().instance =
-            CougarSettingsProcessor.locate<CougarLanguageSettings>()!!
-
-        flavor.bind<CougarQueueSettings>().instance =
-            CougarSettingsProcessor.locate<CougarQueueSettings>()!!
-
-        flavor.bind<CougarIterationSettings>().instance =
-            CougarSettingsProcessor.locate<CougarIterationSettings>()!!
-
-        configure()
-
+    private fun injectServices()
+    {
+        flavor.inject(CommandService)
         flavor.inject(ScCougarServerMessageConsumer)
+
         flavor.inject(ScCougarQueueIterator)
         flavor.inject(ScCougarQueueUpdateStreamIterator)
+    }
 
+    private fun enableQueueUpdater()
+    {
         CougarSettingsProcessor.locate<CougarQueueSettings>()!!.apply {
             for (queue in queues)
             {
@@ -150,29 +83,31 @@ object ScCougarServerBootstrap : ScCougarPlatform()
             }
 
             executor.scheduleAtFixedRate({
-                for (queue in queues)
+                val queueSettings = CougarSettingsProcessor
+                    .locate<CougarQueueSettings>()!!
+
+                for (queue in queueSettings.queues)
                 {
                     queue.pushDataUpdates()
                 }
-            }, 0L, 1L, TimeUnit.SECONDS)
+            }, 1L, 1L, TimeUnit.SECONDS)
         }
+    }
 
+    private fun enableShutdownHook()
+    {
         Runtime.getRuntime()
             .addShutdownHook(
-                object : Thread() {
+                object : Thread()
+                {
                     override fun run()
                     {
                         close()
                     }
                 }
             )
-
-        LOGGER.info("Finished startup in ${System.currentTimeMillis() - startup}ms (${
-            (System.currentTimeMillis() - startup) / 1000
-        }s).")
     }
 
-    override fun getUuidCache() = stdUuidCache
     override fun updateLocalInstance() = Unit
 
     override fun getLocalInstance() =

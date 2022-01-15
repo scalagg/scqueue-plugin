@@ -26,9 +26,6 @@ class ScCougarPlayer(
     override val identifier: UUID
         get() = uniqueId
 
-    val username: String
-        get() = platform.getUuidCache().name(uniqueId)!!
-
     fun save(): CompletableFuture<Void>
     {
         return platform.playerLayer

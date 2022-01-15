@@ -39,25 +39,22 @@ abstract class ScCougarPlatform
     var instanceLayer by Delegates.notNull<DataStoreObjectController<ScCougarInstance>>()
     var queueLayer by Delegates.notNull<DataStoreObjectController<CougarQueueWrapper>>()
 
-    val executor: ScheduledExecutorService = Executors.newScheduledThreadPool(2,
-        ThreadFactoryBuilder()
-            .setNameFormat("Queue Thread Pool #%d")
-            .build()
-    )
-
-    val flavor by lazy {
-        Flavor.create<ScCougarPlatform>(
-            FlavorOptions(Logger.getLogger("ScCougarPlatform"))
+    val executor: ScheduledExecutorService = Executors
+        .newSingleThreadScheduledExecutor(
+            ThreadFactoryBuilder()
+                .setNameFormat("Queue Thread Pool #%d")
+                .build()
         )
-    }
+
+    var flavor = Flavor.create<ScCougarPlatform>(
+        FlavorOptions(Logger.getLogger("ScCougarPlatform"))
+    )
 
     val queueDatabaseIds = mutableMapOf<String, UUID>()
 
     abstract fun updateLocalInstance()
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
-
-    abstract fun getUuidCache(): RedisUUIDCache
 
     fun loadPlayerResources(
         uniqueId: UUID
@@ -89,7 +86,8 @@ abstract class ScCougarPlatform
 
         if (shouldTrackInstance())
         {
-            ScCougarServerMessageProducer.banana.registerClass(object : BananaHandler {
+            ScCougarServerMessageProducer.banana.registerClass(object : BananaHandler
+            {
                 @Subscribe("queue-update")
                 fun onQueueUpdate(message: Message)
                 {

@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit
  * @author GrowlyX
  * @since 1/12/2022
  */
-@IgnoreAutoScan
 @Service("Queue Update Stream")
 object ScCougarQueueUpdateStreamIterator : Runnable
 {
@@ -34,16 +33,16 @@ object ScCougarQueueUpdateStreamIterator : Runnable
     @Configure
     fun configure()
     {
-        val executor = Executors.newScheduledThreadPool(1)
+        val executor = Executors.newSingleThreadScheduledExecutor()
 
         executor.scheduleAtFixedRate(
-            this, 0L,
+            this, 500L,
             ScCougarQueueIterator.iteration.updateStreamIterationDelay,
             TimeUnit.MILLISECONDS
         )
     }
 
-    fun tick()
+    private fun tick()
     {
         for (queue in queues.queues)
         {

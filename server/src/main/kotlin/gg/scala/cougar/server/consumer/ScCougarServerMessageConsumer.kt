@@ -23,7 +23,6 @@ import java.util.*
  * @author GrowlyX
  * @since 1/12/2022
  */
-@IgnoreAutoScan
 @Service("Message Consumer")
 object ScCougarServerMessageConsumer : BananaHandler
 {

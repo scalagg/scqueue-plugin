@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit
  * @since 1/12/2022
  */
 @Service("Queue Iterator")
-@IgnoreAutoScan
 object ScCougarQueueIterator : Runnable
 {
     @Inject
@@ -33,10 +32,10 @@ object ScCougarQueueIterator : Runnable
     @Configure
     fun configure()
     {
-        val executor = Executors.newScheduledThreadPool(1)
+        val executor = Executors.newSingleThreadScheduledExecutor()
 
         executor.scheduleAtFixedRate(
-            this, 0L,
+            this, 500L,
             iteration.iterationDelay,
             TimeUnit.MILLISECONDS
         )

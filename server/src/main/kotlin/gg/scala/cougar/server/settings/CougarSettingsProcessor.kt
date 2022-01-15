@@ -1,6 +1,13 @@
 package gg.scala.cougar.server.settings
 
 import com.google.common.io.Files
+import gg.scala.cougar.server.ScCougarServerBootstrap
+import gg.scala.cougar.server.settings.impl.CougarIterationSettings
+import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
+import gg.scala.cougar.server.settings.impl.CougarQueueSettings
+import gg.scala.flavor.service.Configure
+import gg.scala.flavor.service.Service
+import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import net.evilblock.cubed.serializers.Serializers
 import net.evilblock.cubed.serializers.impl.AbstractTypeSerializer
 import java.io.File
@@ -10,10 +17,13 @@ import kotlin.reflect.KClass
  * @author GrowlyX
  * @since 12/15/2021
  */
+@IgnoreAutoScan
+@Service("Settings Processor")
 object CougarSettingsProcessor
 {
     val settings = mutableMapOf<KClass<*>, CougarSettingsModel>()
 
+    @Configure
     fun configure()
     {
         Serializers.useGsonBuilderThenRebuild {
@@ -23,6 +33,14 @@ object CougarSettingsProcessor
                 AbstractTypeSerializer<CougarSettingsModel>()
             )
         }
+
+        loadSettings<CougarLanguageSettings>("language")
+        loadSettings<CougarQueueSettings>("queues")
+        loadSettings<CougarIterationSettings>("iteration")
+
+        ScCougarServerBootstrap.flavor.bind<CougarLanguageSettings>().instance = locate<CougarLanguageSettings>()!!
+        ScCougarServerBootstrap.flavor.bind<CougarQueueSettings>().instance = locate<CougarQueueSettings>()!!
+        ScCougarServerBootstrap.flavor.bind<CougarIterationSettings>().instance = locate<CougarIterationSettings>()!!
     }
 
     inline fun <reified T> locate(): T?

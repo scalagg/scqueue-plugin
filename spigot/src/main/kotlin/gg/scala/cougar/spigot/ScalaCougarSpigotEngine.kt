@@ -2,9 +2,6 @@ package gg.scala.cougar.spigot
 
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
-import gg.scala.cougar.spigot.caching.UuidCacheProvider
-import gg.scala.cougar.spigot.caching.impl.CubedUuidCacheProvider
-import gg.scala.cougar.spigot.caching.impl.DefaultUuidCacheProvider
 import gg.scala.flavor.inject.Inject
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
@@ -21,7 +18,6 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
     lateinit var plugin: ScalaCougarSpigotPlugin
 
     private lateinit var instance: ScCougarInstance
-    private lateinit var uuidCacheProvider: UuidCacheProvider
 
     override fun configure()
     {
@@ -42,10 +38,6 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
             plugin.serverDetailsProvider
                 .getServerName(), databaseId
         )
-
-        uuidCacheProvider =
-            if (Bukkit.getPluginManager().getPlugin("Cubed") != null)
-                CubedUuidCacheProvider() else DefaultUuidCacheProvider
     }
 
     override fun updateLocalInstance()
@@ -62,6 +54,4 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
 
     override fun getLocalInstance() = instance
     override fun shouldTrackInstance() = true
-
-    override fun getUuidCache() = uuidCacheProvider.getUuidCache()
 }
