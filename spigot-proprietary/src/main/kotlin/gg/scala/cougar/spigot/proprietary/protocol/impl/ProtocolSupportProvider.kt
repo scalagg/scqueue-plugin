@@ -3,6 +3,7 @@ package gg.scala.cougar.spigot.proprietary.protocol.impl
 import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionProvider
 import org.bukkit.entity.Player
 import protocolsupport.api.ProtocolSupportAPI
+import protocolsupport.api.ProtocolVersion
 
 /**
  * @author GrowlyX
@@ -13,5 +14,11 @@ class ProtocolSupportProvider : ProtocolVersionProvider
     override fun getProtocolVersion(player: Player): Int
     {
         return ProtocolSupportAPI.getProtocolVersion(player).id
+    }
+
+    override fun findFancyMapping(int: Int): String
+    {
+        return ProtocolVersion.values()
+            .first { it.id == int }.name
     }
 }

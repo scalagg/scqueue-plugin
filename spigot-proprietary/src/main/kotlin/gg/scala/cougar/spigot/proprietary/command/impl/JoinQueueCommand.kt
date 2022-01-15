@@ -4,7 +4,6 @@ import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import gg.scala.cougar.spigot.proprietary.command.CommandService
-import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionMappings
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.annotation.CommandAlias
@@ -41,8 +40,10 @@ object JoinQueueCommand : BaseCommand()
         {
             throw ConditionFailedException("You can only join this queue if you're on: ${
                 server.allowedProtocols
-                    .joinToString { 
-                        ProtocolVersionMappings.fromInternal(it).fancy()
+                    .joinToString {
+                        CommandService.plugin
+                            .protocolVersionProvider
+                            .findFancyMapping(it)
                     }
             }.")
         }

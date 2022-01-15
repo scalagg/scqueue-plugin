@@ -3,6 +3,7 @@ package gg.scala.cougar.spigot.proprietary
 import gg.scala.cougar.spigot.proprietary.backbone.BackboneService
 import gg.scala.cougar.spigot.proprietary.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.proprietary.protocol.impl.CubedVersionProvider
+import gg.scala.cougar.spigot.proprietary.protocol.impl.ProtocolSupportProvider
 import gg.scala.cougar.spigot.proprietary.protocol.impl.ViaVersionProvider
 import gg.scala.cougar.spigot.proprietary.provider.PlayerPriorityProvider
 import gg.scala.cougar.spigot.proprietary.provider.impl.LemonPlayerPriorityProvider
@@ -42,7 +43,7 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
 
     private fun registerProviders()
     {
-        if (Bukkit.getPluginManager().getPlugin("Lemon") != null)
+        if ("Lemon".pluginExists())
         {
             priorityProvider = LemonPlayerPriorityProvider()
             serverDetailsProvider = LemonServerDetailsProvider()
@@ -52,15 +53,21 @@ class ScalaCougarSpigotProprietaryPlugin : ExtendedJavaPlugin()
                 .also { it.configure(this) }
         }
 
-        if (Bukkit.getPluginManager().getPlugin("Cubed") != null)
+        if ("ProtocolSupport".pluginExists())
+        {
+            protocolVersionProvider = ProtocolSupportProvider()
+        } else if ("ViaVersion".pluginExists())
+        {
+            protocolVersionProvider = ViaVersionProvider()
+        } else if ("Cubed".pluginExists())
         {
             protocolVersionProvider = CubedVersionProvider()
         }
+    }
 
-        if (Bukkit.getPluginManager().getPlugin("ViaVersion") != null)
-        {
-            protocolVersionProvider = ViaVersionProvider()
-        }
+    private fun String.pluginExists(): Boolean
+    {
+        return Bukkit.getPluginManager().getPlugin(this) != null
     }
 
     override fun disable()

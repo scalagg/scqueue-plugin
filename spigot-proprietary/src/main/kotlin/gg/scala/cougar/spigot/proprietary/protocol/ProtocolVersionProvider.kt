@@ -9,4 +9,9 @@ import org.bukkit.entity.Player
 interface ProtocolVersionProvider
 {
     fun getProtocolVersion(player: Player): Int
+
+    fun findFancyMapping(int: Int): String
+    {
+        return ProtocolVersionMappings.fromInternal(int).fancy()
+    }
 }
