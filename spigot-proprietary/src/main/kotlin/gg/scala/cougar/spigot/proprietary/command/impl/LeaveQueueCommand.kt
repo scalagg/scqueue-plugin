@@ -1,13 +1,12 @@
 package gg.scala.cougar.spigot.proprietary.command.impl
 
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.proprietary.ScalaCougarSpigotProprietaryEngine
 import net.evilblock.cubed.acf.BaseCommand
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.acf.annotation.CommandAlias
 import net.evilblock.cubed.acf.annotation.CommandPermission
-import net.evilblock.cubed.util.CC
+import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 /**
@@ -31,14 +30,9 @@ object LeaveQueueCommand : BaseCommand()
     {
         val engine = ScalaCougarSpigotProprietaryEngine
 
-        if (
-            engine.queueLayer.localCache.values.none {
-                it.isInQueue(player.uniqueId)
-            }
-        )
-        {
-            throw ConditionFailedException("You're not currently queued for a server.")
-        }
+        val queued = engine.queueLayer.localCache.values
+            .firstOrNull { it.isInQueue(player.uniqueId) }
+            ?: throw ConditionFailedException("You're not currently queued for a server.")
 
         ScCougarServerMessageProducer.produce(
             "queue-remove",
@@ -47,9 +41,6 @@ object LeaveQueueCommand : BaseCommand()
             ScCougarServerMessageProducer.banana
         )
 
-        // the ${CC.YELLOW}${
-        //            wrapper.fancyDisplayName
-        //        }${CC.RED}
-        player.sendMessage("${CC.RED}You've left queue.")
+        player.sendMessage("${ChatColor.RED}You've left ${ChatColor.YELLOW}${queued.fancyDisplayName}${ChatColor.RED} queue.")
     }
 }

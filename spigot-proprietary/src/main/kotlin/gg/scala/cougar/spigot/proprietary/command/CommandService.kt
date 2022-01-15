@@ -11,9 +11,7 @@ import gg.scala.flavor.service.Service
 import gg.scala.lemon.Lemon
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.command.manager.CubedCommandManager
-import net.evilblock.cubed.util.CC
 import org.bukkit.ChatColor
-
 
 /**
  * @author GrowlyX
@@ -43,7 +41,7 @@ object CommandService
                 .localCache.values.firstOrNull { wrapper ->
                     wrapper.serverId.equals(poppedArgument, true)
                 } ?: throw ConditionFailedException(
-                    "There is no queue named ${CC.YELLOW}$poppedArgument${CC.RED}."
+                    "There is no queue named ${ChatColor.YELLOW}$poppedArgument${ChatColor.RED}."
                 )
         }
 

@@ -11,6 +11,7 @@ import net.evilblock.cubed.acf.annotation.CommandAlias
 import net.evilblock.cubed.acf.annotation.CommandPermission
 import net.evilblock.cubed.util.CC
 import net.evilblock.cubed.util.nms.MinecraftProtocol
+import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 /**
@@ -56,8 +57,6 @@ object JoinQueueCommand : BaseCommand()
             ScCougarServerMessageProducer.banana
         )
 
-        player.sendMessage("${CC.GREEN}You've been added to the ${CC.YELLOW}${
-            server.fancyDisplayName
-        }${CC.GREEN} queue.")
+        player.sendMessage("${ChatColor.GREEN}You've been added to the ${ChatColor.YELLOW}${server.fancyDisplayName}${ChatColor.GREEN} queue.")
     }
 }
