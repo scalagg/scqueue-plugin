@@ -27,16 +27,14 @@ class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
 
     override fun enable()
     {
-        val flavor = Flavor.create<ScalaCougarSpigotPlugin>(
+        ScalaCougarSpigotEngine.flavor = Flavor.create<ScalaCougarSpigotPlugin>(
             FlavorOptions(logger)
         )
 
-        ScalaCougarSpigotEngine.configure()
-
-        flavor.bind<ScalaCougarSpigotPlugin>() to this
-        flavor.startup()
-
         registerProviders()
+
+        ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
+        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
 
         BackboneService.configure()
     }

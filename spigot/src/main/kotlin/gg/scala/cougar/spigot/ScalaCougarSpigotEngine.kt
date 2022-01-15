@@ -3,6 +3,9 @@ package gg.scala.cougar.spigot
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.flavor.inject.Inject
+import gg.scala.flavor.service.Configure
+import gg.scala.flavor.service.Service
+import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
 import org.bukkit.Bukkit
@@ -12,6 +15,8 @@ import java.util.*
  * @author GrowlyX
  * @since 1/12/2022
  */
+@Service
+@IgnoreAutoScan
 object ScalaCougarSpigotEngine : ScCougarPlatform()
 {
     @Inject
@@ -19,6 +24,7 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
 
     private lateinit var instance: ScCougarInstance
 
+    @Configure
     override fun configure()
     {
         super.configure()
