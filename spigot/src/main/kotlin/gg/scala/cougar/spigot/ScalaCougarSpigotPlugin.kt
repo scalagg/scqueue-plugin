@@ -13,12 +13,23 @@ import gg.scala.cougar.spigot.server.impl.LemonServerDetailsProvider
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
 import me.lucko.helper.plugin.ExtendedJavaPlugin
+import me.lucko.helper.plugin.ap.Plugin
+import me.lucko.helper.plugin.ap.PluginDependency
 import org.bukkit.Bukkit
 
 /**
  * @author GrowlyX
  * @since 1/12/2022
  */
+@Plugin(
+    name = "Cougar",
+    depends = [
+        PluginDependency("helper"),
+        PluginDependency("store-spigot"),
+        PluginDependency("Lemon", soft = true),
+        PluginDependency("Cubed", soft = true),
+    ]
+)
 class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
 {
     lateinit var priorityProvider: PlayerPriorityProvider

@@ -1,7 +1,8 @@
 plugins {
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "org.jetbrains.kotlin.jvm" version "1.6.10"
+    id "org.jetbrains.kotlin.kapt" version "1.6.10"
 }
 
 allprojects {
@@ -12,7 +13,6 @@ allprojects {
         mavenCentral()
         mavenLocal()
 
-        maven { url "https://repo.lucko.me" }
         maven { url "https://jitpack.io" }
     }
 }
@@ -21,9 +21,10 @@ subprojects {
     apply plugin: "maven-publish"
     apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "org.jetbrains.kotlin.jvm"
+    apply plugin: "org.jetbrains.kotlin.kapt"
 
     dependencies {
-        compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+        compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
         compileOnly 'com.github.growlyx:flavor:0.1.2'
         compileOnly 'com.github.scalagg.scala-store:shared:217d6f05c0'
