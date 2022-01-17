@@ -26,7 +26,7 @@ subprojects {
     dependencies {
         compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
-        compileOnly 'com.github.growlyx:flavor:0.1.2'
+        compileOnly 'com.github.growlyx:flavor:aced8e79f1'
         compileOnly 'com.github.scalagg.scala-store:shared:217d6f05c0'
         compileOnly 'com.google.guava:guava:31.0.1-jre'
 

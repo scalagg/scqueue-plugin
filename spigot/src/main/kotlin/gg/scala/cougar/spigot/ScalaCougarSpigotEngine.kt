@@ -15,7 +15,7 @@ import java.util.*
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service
+@Service("SpigotEngine")
 @IgnoreAutoScan
 object ScalaCougarSpigotEngine : ScCougarPlatform()
 {

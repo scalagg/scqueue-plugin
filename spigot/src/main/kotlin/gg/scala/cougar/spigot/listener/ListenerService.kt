@@ -16,7 +16,7 @@ import java.util.concurrent.ForkJoinPool
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service("Listeners")
+@Service("ListenerService")
 object ListenerService
 {
     @Inject
