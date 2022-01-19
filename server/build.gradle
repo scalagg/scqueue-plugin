@@ -10,8 +10,8 @@ dependencies {
     implementation fileTree("cubed")
     implementation project(":common")
 
-    implementation 'com.github.growlyx:flavor:0.1.2'
-    implementation 'com.github.scalagg.scala-store:shared:217d6f05c0'
+    implementation 'gg.scala.flavor:flavor:0.1.2'
+    implementation 'gg.scala.store:shared:0.1.0'
 
     implementation 'com.google.guava:guava:31.0.1-jre'
 

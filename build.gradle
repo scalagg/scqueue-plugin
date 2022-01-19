@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 plugins {
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
@@ -11,7 +13,17 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal()
+
+        maven {
+            name "Scala"
+            allowInsecureProtocol true
+            url "http://repository.scala.gg/repository/maven-releases/"
+
+            credentials {
+                username property("scala.credentials.username") as String
+                password property("scala.credentials.password") as String
+            }
+        }
 
         maven { url "https://jitpack.io" }
     }
@@ -26,8 +38,11 @@ subprojects {
     dependencies {
         compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
-        compileOnly 'com.github.growlyx:flavor:aced8e79f1'
-        compileOnly 'com.github.scalagg.scala-store:shared:217d6f05c0'
+        compileOnly 'gg.scala.flavor:flavor:0.1.2'
+
+        compileOnly 'gg.scala.store:shared:0.1.0'
+        compileOnly 'gg.scala.store:spigot:0.1.0'
+
         compileOnly 'com.google.guava:guava:31.0.1-jre'
 
         compileOnly fileTree("internal")
@@ -48,13 +63,55 @@ subprojects {
         archiveFileName = "cougar-${project.name}.jar"
     }
 
+    tasks.withType(GenerateMavenPom).all {
+        doLast {
+            final File file = new File(
+                    "$buildDir/publications/shadow/pom-default.xml"
+            )
+
+            final BufferedReader br = new BufferedReader(
+                    new FileReader(file)
+
+            )
+            final String lines = br.lines()
+                    .map((line) -> {
+                        if (line.contains("<dependencies/>")) "" else line
+                    })
+                    .collect(Collectors.joining("\n"))
+
+            final BufferedWriter wr = new BufferedWriter(
+                    new FileWriter(file, true)
+            )
+
+            final PrintWriter writer = new PrintWriter(file)
+            writer.print("")
+            writer.close()
+
+            wr.write(lines)
+            wr.close()
+        }
+    }
+
     publishing {
         publications {
             shadow(MavenPublication) { publication ->
-                project.shadow.component(publication)
+                from components.kotlin
+            }
+        }
+
+        repositories {
+            maven {
+                name "Scala"
+                allowInsecureProtocol true
+                url "http://repository.scala.gg/repository/maven-releases/"
+
+                credentials {
+                    username property("scala.credentials.username") as String
+                    password property("scala.credentials.password") as String
+                }
             }
         }
     }
 
-    tasks.build.dependsOn(shadowJar)
+    tasks.build.dependsOn(shadowJar, publishShadowPublicationToScalaRepository)
 }
