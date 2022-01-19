@@ -3,8 +3,7 @@
 *.iml
 *.iws
 
-# Development Environment
-./server/devenv
+gradle.properties
 
 # Mac
 .DS_Store
@@ -25,7 +24,7 @@ rebel.xml
 
 .gradle
 **/build/
-!common/src/**/build/
+!src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
