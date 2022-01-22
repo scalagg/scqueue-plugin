@@ -1,9 +1,0 @@
-{
-  "queues": [
-    {
-      "targetServerId": "something",
-      "fancyDisplayName": "Something Queue",
-      "allowedProtocols": [5, 47]
-    }
-  ]
-}

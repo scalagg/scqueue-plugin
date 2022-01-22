@@ -44,8 +44,6 @@ subprojects {
         compileOnly 'gg.scala.store:spigot:0.1.0'
 
         compileOnly 'com.google.guava:guava:31.0.1-jre'
-
-        compileOnly fileTree("internal")
     }
 
     compileKotlin {
@@ -95,7 +93,7 @@ subprojects {
     publishing {
         publications {
             shadow(MavenPublication) { publication ->
-                from components.kotlin
+                project.shadow.component(publication)
             }
         }
 
