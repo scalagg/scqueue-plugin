@@ -1,5 +1,6 @@
 package gg.scala.cougar.server.store
 
+import gg.scala.cougar.server.redis.ScCougarRedisEngine
 import gg.scala.store.ScalaDataStoreShared
 import gg.scala.store.connection.AbstractDataStoreConnection
 import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
@@ -17,7 +18,9 @@ object ScalaDataStoreStandaloneImpl : ScalaDataStoreShared()
 {
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
-        return NoAuthDataStoreRedisConnection(DataStoreRedisConnectionDetails())
+        return NoAuthDataStoreRedisConnection(
+            ScCougarRedisEngine.dsWrapper
+        )
     }
 
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection

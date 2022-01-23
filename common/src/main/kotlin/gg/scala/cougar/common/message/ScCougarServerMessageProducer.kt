@@ -22,8 +22,10 @@ object ScCougarServerMessageProducer
                 .build()
         )
 
+    lateinit var bananaConf: BananaCredentials
+
     val banana = Banana(
-        BananaCredentials(),
+        bananaConf,
         BananaOptions(
             channel = "cougar:backbone",
             gson = Serializers.gson,

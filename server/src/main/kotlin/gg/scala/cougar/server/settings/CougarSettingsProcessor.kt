@@ -5,6 +5,7 @@ import gg.scala.cougar.server.ScCougarServerBootstrap
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
+import gg.scala.cougar.server.settings.impl.CougarRedisSettings
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
@@ -37,10 +38,12 @@ object CougarSettingsProcessor
         loadSettings<CougarLanguageSettings>("language")
         loadSettings<CougarQueueSettings>("queues")
         loadSettings<CougarIterationSettings>("iteration")
+        loadSettings<CougarRedisSettings>("redis")
 
         ScCougarServerBootstrap.flavor.bind<CougarLanguageSettings>().instance = locate<CougarLanguageSettings>()!!
         ScCougarServerBootstrap.flavor.bind<CougarQueueSettings>().instance = locate<CougarQueueSettings>()!!
         ScCougarServerBootstrap.flavor.bind<CougarIterationSettings>().instance = locate<CougarIterationSettings>()!!
+        ScCougarServerBootstrap.flavor.bind<CougarRedisSettings>().instance = locate<CougarRedisSettings>()!!
     }
 
     inline fun <reified T> locate(): T?

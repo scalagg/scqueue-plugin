@@ -9,12 +9,14 @@ import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
+import gg.scala.cougar.server.redis.ScCougarRedisEngine
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
+import gg.scala.store.spigot.ScalaDataStoreSpigot
 import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
 import java.util.*
@@ -30,7 +32,7 @@ object ScCougarServerMessageConsumer : BananaHandler
     fun configure()
     {
         val banana = Banana(
-            BananaCredentials(),
+            ScCougarRedisEngine.bananaWrapper,
             BananaOptions(
                 channel = "cougar:backbone",
                 gson = Serializers.gson,

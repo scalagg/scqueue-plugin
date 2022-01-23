@@ -33,15 +33,16 @@ object ScCougarServerBootstrap : ScCougarPlatform()
         val startup = System.currentTimeMillis()
         LOGGER.info("Starting cougar server...")
 
-        ScalaDataStoreShared.INSTANCE = ScalaDataStoreStandaloneImpl
-
         flavor = Flavor
             .create<ScCougarServerBootstrap>(
                 FlavorOptions(LOGGER)
             )
 
         CougarSettingsProcessor
-            .configure();
+            .configure()
+
+        ScalaDataStoreShared.INSTANCE =
+            ScalaDataStoreStandaloneImpl
 
         setupLayers()
         configure()

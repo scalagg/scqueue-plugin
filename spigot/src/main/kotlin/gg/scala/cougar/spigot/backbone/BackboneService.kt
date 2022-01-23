@@ -14,6 +14,9 @@ import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
+import gg.scala.store.ScalaDataStoreShared
+import gg.scala.store.spigot.ScalaDataStoreSpigot
+import gg.scala.store.spigot.ScalaDataStoreSpigotImpl
 import net.evilblock.cubed.serializers.Serializers
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -32,7 +35,7 @@ object BackboneService
     private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
 
     val banana = Banana(
-        BananaCredentials(),
+        ScCougarServerMessageProducer.bananaConf,
         BananaOptions(
             channel = "cougar:backbone",
             executor = ScCougarServerMessageProducer.executor
@@ -46,7 +49,7 @@ object BackboneService
     fun configure()
     {
         val bukkitBackbone = Banana(
-            BananaCredentials(),
+            ScCougarServerMessageProducer.bananaConf,
             BananaOptions(
                 channel = "cougar:bukkit",
                 executor = ScCougarServerMessageProducer.executor
