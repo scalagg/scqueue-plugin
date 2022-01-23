@@ -25,7 +25,7 @@ import java.util.*
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service("BackboneService")
+@Service
 @IgnoreAutoScan
 object BackboneService
 {

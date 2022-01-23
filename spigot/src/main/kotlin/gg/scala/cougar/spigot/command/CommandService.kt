@@ -16,7 +16,7 @@ import org.bukkit.ChatColor
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service("CommandService")
+@Service
 object CommandService
 {
     @Inject

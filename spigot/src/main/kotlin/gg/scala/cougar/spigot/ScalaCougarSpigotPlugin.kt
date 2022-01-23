@@ -23,7 +23,6 @@ import org.bukkit.Bukkit
  */
 @Plugin(
     name = "Cougar",
-    version = "1.0.1",
     depends = [
         PluginDependency("helper"),
         PluginDependency("store-spigot"),
