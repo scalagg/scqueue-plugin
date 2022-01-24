@@ -29,7 +29,7 @@ object LeaveQueueCommand : BaseCommand()
             "queue-remove",
             "uniqueId" to player.uniqueId
         ).dispatch(
-            ScCougarServerMessageProducer.banana
+            ScalaCougarSpigotEngine.producer.banana
         )
 
         player.sendMessage("${ChatColor.RED}You've left ${ChatColor.YELLOW}${queued.fancyDisplayName}${ChatColor.RED} queue.")

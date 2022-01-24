@@ -1,5 +1,6 @@
 package gg.scala.cougar.server.iterator
 
+import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
@@ -24,6 +25,9 @@ import java.util.concurrent.TimeUnit
 @Service("Queue Update Stream")
 object ScCougarQueueUpdateStreamIterator : Runnable
 {
+    @Inject
+    lateinit var platform: ScCougarPlatform
+
     @Inject
     lateinit var language: CougarLanguageSettings
 
@@ -85,7 +89,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 "messages" to serializedMessageMap
             ).dispatch(
                 "cougar:bukkit",
-                ScCougarServerMessageProducer.banana
+                platform.producer.banana
             )
         }
     }

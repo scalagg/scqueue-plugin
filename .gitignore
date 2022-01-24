@@ -13,6 +13,8 @@ log/
 /target/
 dependency-reduced-pom.xml
 
+/server/devenv
+
 # Java
 #*.jar
 

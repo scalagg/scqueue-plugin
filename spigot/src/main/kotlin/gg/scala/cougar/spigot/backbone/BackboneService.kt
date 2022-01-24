@@ -7,6 +7,7 @@ import gg.scala.banana.annotate.Subscribe
 import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.message.Message
 import gg.scala.banana.options.BananaOptions
+import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
@@ -32,13 +33,20 @@ import java.util.*
 @IgnoreAutoScan
 object BackboneService
 {
+    @Inject
+    lateinit var platform: ScCougarPlatform
+
     private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
 
     val banana = Banana(
-        ScCougarServerMessageProducer.bananaConf,
+        BananaCredentials(
+            address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
+            port = ScalaDataStoreSpigot.INSTANCE.redis.port,
+            password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
+        ),
         BananaOptions(
             channel = "cougar:backbone",
-            executor = ScCougarServerMessageProducer.executor
+            executor = platform.producer.executor
         )
     )
 
@@ -49,10 +57,14 @@ object BackboneService
     fun configure()
     {
         val bukkitBackbone = Banana(
-            ScCougarServerMessageProducer.bananaConf,
+            BananaCredentials(
+                address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
+                port = ScalaDataStoreSpigot.INSTANCE.redis.port,
+                password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
+            ),
             BananaOptions(
                 channel = "cougar:bukkit",
-                executor = ScCougarServerMessageProducer.executor
+                executor = platform.producer.executor
             )
         )
 

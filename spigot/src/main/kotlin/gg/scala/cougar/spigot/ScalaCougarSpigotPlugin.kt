@@ -1,6 +1,7 @@
 package gg.scala.cougar.spigot
 
 import gg.scala.banana.credentials.BananaCredentials
+import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.backbone.BackboneService
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
@@ -47,18 +48,20 @@ class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
                 FlavorOptions(logger)
             )
 
-        ScCougarServerMessageProducer.bananaConf = BananaCredentials(
+        registerProviders()
+
+        ScalaCougarSpigotEngine.preLoad()
+
+        ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
+        ScalaCougarSpigotEngine.flavor.bind<ScCougarPlatform>() to ScalaCougarSpigotEngine
+
+        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
+
+        ScalaCougarSpigotEngine.configure(BananaCredentials(
             address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
             port = ScalaDataStoreSpigot.INSTANCE.redis.port,
             password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
-        )
-
-        registerProviders()
-
-        ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
-
-        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
-        ScalaCougarSpigotEngine.flavor.inject(BackboneService)
+        ))
     }
 
     private fun registerProviders()

@@ -13,7 +13,9 @@ import java.util.concurrent.ScheduledExecutorService
  * @author GrowlyX
  * @since 1/12/2022
  */
-object ScCougarServerMessageProducer
+class ScCougarServerMessageProducer(
+    conf: BananaCredentials
+)
 {
     val executor: ScheduledExecutorService = Executors
         .newSingleThreadScheduledExecutor(
@@ -22,30 +24,31 @@ object ScCougarServerMessageProducer
                 .build()
         )
 
-    lateinit var bananaConf: BananaCredentials
-
     val banana = Banana(
-        bananaConf,
-        BananaOptions(
+        conf, BananaOptions(
             channel = "cougar:backbone",
             gson = Serializers.gson,
             executor = executor
         )
     )
 
-    fun produce(
-        packet: String,
-        vararg arguments: Pair<String, Any>
-    ): Message
+    companion object
     {
-        val message = Message(packet)
-
-        for (argument in arguments)
+        @JvmStatic
+        fun produce(
+            packet: String,
+            vararg arguments: Pair<String, Any>
+        ): Message
         {
-            message[argument.first] = argument
-                .second.toString()
-        }
+            val message = Message(packet)
 
-        return message
+            for (argument in arguments)
+            {
+                message[argument.first] = argument
+                    .second.toString()
+            }
+
+            return message
+        }
     }
 }

@@ -53,7 +53,7 @@ object JoinQueueCommand : BaseCommand()
             "serverId" to server.serverId,
             "uniqueId" to player.uniqueId
         ).dispatch(
-            ScCougarServerMessageProducer.banana
+            ScalaCougarSpigotEngine.producer.banana
         )
 
         player.sendMessage("${ChatColor.GREEN}You've been added to the ${ChatColor.YELLOW}${server.fancyDisplayName}${ChatColor.GREEN} queue.")

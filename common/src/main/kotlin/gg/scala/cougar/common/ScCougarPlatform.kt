@@ -2,6 +2,7 @@ package gg.scala.cougar.common
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import gg.scala.banana.annotate.Subscribe
+import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.message.Message
 import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
@@ -77,16 +78,23 @@ abstract class ScCougarPlatform
         queueLayer = DataStoreObjectControllerCache.create(Serializers.gson)
     }
 
-    open fun configure()
+    var producer by Delegates.notNull<ScCougarServerMessageProducer>()
+
+    fun preLoad()
     {
         INSTANCE = this
+    }
 
+    open fun configure(credentials: BananaCredentials)
+    {
         flavor.bind<ScCougarPlatform>() to this
 
         flavor.bind<DataStoreObjectController<ScCougarPlayer>>() to playerLayer
         flavor.bind<DataStoreObjectController<ScCougarInstance>>() to instanceLayer
 
-        ScCougarServerMessageProducer.banana.registerClass(object : BananaHandler
+        producer = ScCougarServerMessageProducer(credentials)
+
+        producer.banana.registerClass(object : BananaHandler
         {
             @Subscribe("queue-update")
             fun onQueueUpdate(message: Message)
@@ -103,9 +111,9 @@ abstract class ScCougarPlatform
             }
         })
 
-        ScCougarServerMessageProducer.banana.subscribe()
+        producer.banana.subscribe()
 
-        ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
+        producer.executor.scheduleAtFixedRate({
             val queues = queueLayer
                 .loadAll(DataStoreStorageType.REDIS)
                 .join()
@@ -118,7 +126,7 @@ abstract class ScCougarPlatform
 
         if (shouldTrackInstance())
         {
-            ScCougarServerMessageProducer.executor.scheduleAtFixedRate({
+            producer.executor.scheduleAtFixedRate({
                 updateLocalInstance()
 
                 instanceLayer.save(

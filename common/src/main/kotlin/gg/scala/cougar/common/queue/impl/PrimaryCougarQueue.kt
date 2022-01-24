@@ -1,8 +1,8 @@
 package gg.scala.cougar.common.queue.impl
 
 import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer.Companion.produce
+
 import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.inject.Inject
@@ -25,7 +25,7 @@ class PrimaryCougarQueue(
 {
     @Inject
     @Transient
-    lateinit var platform: ScCougarPlatform
+    val platform = ScCougarPlatform.INSTANCE
 
     fun pushDataUpdates(): CompletableFuture<Void>
     {
@@ -41,7 +41,7 @@ class PrimaryCougarQueue(
                     "queue-update",
                     "uniqueId" to wrapped.identifier
                 ).dispatch(
-                    ScCougarServerMessageProducer.banana
+                    platform.producer.banana
                 )
             }
     }

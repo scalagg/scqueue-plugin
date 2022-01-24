@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot
 
+import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.flavor.inject.Inject
@@ -24,11 +25,10 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
 
     private lateinit var instance: ScCougarInstance
 
-    @Configure
-    override fun configure()
+    override fun configure(credentials: BananaCredentials)
     {
         super.setupLayers()
-        super.configure()
+        super.configure(credentials)
 
         val databaseId = instanceLayer
             .useLayerWithReturn<RedisDataStoreStorageLayer<ScCougarInstance>, UUID>(

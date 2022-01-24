@@ -6,7 +6,7 @@ import gg.scala.cougar.server.settings.impl.CougarRedisSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.store.connection.redis.impl.AuthDataStoreRedisConnection
+import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
 
 /**
@@ -14,6 +14,7 @@ import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDeta
  * @since 1/23/2022
  */
 @Service
+@IgnoreAutoScan
 object ScCougarRedisEngine
 {
     @Inject
@@ -34,7 +35,5 @@ object ScCougarRedisEngine
         dsWrapper = DataStoreRedisConnectionDetails(
             redisConf.address, redisConf.port, redisConf.password
         )
-
-        ScCougarServerMessageProducer.bananaConf = bananaWrapper
     }
 }
