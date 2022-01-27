@@ -64,15 +64,6 @@ object ScCougarServerBootstrap : ScCougarPlatform()
         )
     }
 
-    private fun injectServices()
-    {
-        flavor.inject(CommandService)
-        flavor.inject(ScCougarServerMessageConsumer)
-
-        flavor.inject(ScCougarQueueIterator)
-        flavor.inject(ScCougarQueueUpdateStreamIterator)
-    }
-
     private fun enableQueueUpdater()
     {
         CougarSettingsProcessor.locate<CougarQueueSettings>()!!.apply {

@@ -23,10 +23,6 @@ class PrimaryCougarQueue(
     PrimaryCougarQueueComparator
 )
 {
-    @Inject
-    @Transient
-    val platform = ScCougarPlatform.INSTANCE
-
     fun pushDataUpdates(): CompletableFuture<Void>
     {
         val wrapped = CougarQueueWrapper(
@@ -41,7 +37,7 @@ class PrimaryCougarQueue(
                     "queue-update",
                     "uniqueId" to wrapped.identifier
                 ).dispatch(
-                    platform.producer.banana
+                    ScCougarPlatform.INSTANCE.producer.banana
                 )
             }
     }

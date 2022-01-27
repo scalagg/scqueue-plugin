@@ -53,8 +53,6 @@ class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
         ScalaCougarSpigotEngine.preLoad()
 
         ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
-        ScalaCougarSpigotEngine.flavor.bind<ScCougarPlatform>() to ScalaCougarSpigotEngine
-
         ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
 
         ScalaCougarSpigotEngine.configure(BananaCredentials(

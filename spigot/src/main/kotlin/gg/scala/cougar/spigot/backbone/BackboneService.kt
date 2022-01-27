@@ -30,7 +30,6 @@ import java.util.*
  * @since 1/12/2022
  */
 @Service
-@IgnoreAutoScan
 object BackboneService
 {
     @Inject
@@ -38,17 +37,19 @@ object BackboneService
 
     private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
 
-    val banana = Banana(
-        BananaCredentials(
-            address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
-            port = ScalaDataStoreSpigot.INSTANCE.redis.port,
-            password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
-        ),
-        BananaOptions(
-            channel = "cougar:backbone",
-            executor = platform.producer.executor
+    val banana by lazy {
+        Banana(
+            BananaCredentials(
+                address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
+                port = ScalaDataStoreSpigot.INSTANCE.redis.port,
+                password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
+            ),
+            BananaOptions(
+                channel = "cougar:backbone",
+                executor = platform.producer.executor
+            )
         )
-    )
+    }
 
     @Inject
     lateinit var plugin: ScalaCougarSpigotPlugin
