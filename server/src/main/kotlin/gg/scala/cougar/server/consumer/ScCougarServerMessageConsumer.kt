@@ -18,6 +18,7 @@ import gg.scala.flavor.service.Service
 import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * @author GrowlyX
@@ -96,7 +97,11 @@ object ScCougarServerMessageConsumer : BananaHandler
             // scheduling a removal from the
             // queue after x amount of millis
             QueuePlayerRetention
-                .retain(uniqueId, duration, message)
+                .retain(
+                    uniqueId,
+                    TimeUnit.MINUTES.toMillis(duration),
+                    message
+                )
         }
     }
 

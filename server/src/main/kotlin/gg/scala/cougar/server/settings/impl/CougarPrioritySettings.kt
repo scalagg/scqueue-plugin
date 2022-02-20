@@ -1,7 +1,6 @@
 package gg.scala.cougar.server.settings.impl
 
 import gg.scala.cougar.server.settings.CougarSettingsModel
-import java.util.concurrent.TimeUnit
 
 /**
  * @author GrowlyX
@@ -9,7 +8,7 @@ import java.util.concurrent.TimeUnit
  */
 class CougarPrioritySettings(
     val priorityToDuration: Map<Int, Long> =
-        mutableMapOf(10 to TimeUnit.MINUTES.toMillis(10L))
+        mutableMapOf(10 to 10L)
 ) : CougarSettingsModel()
 {
     override fun getAbstractType() = this::class.java
