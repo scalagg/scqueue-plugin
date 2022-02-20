@@ -4,6 +4,7 @@ import gg.scala.cougar.server.console.ConsoleChatColor
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
+import gg.scala.cougar.server.settings.impl.CougarPrioritySettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.cli.ConsoleActor
@@ -24,6 +25,7 @@ object SystemCommands
         CougarSettingsProcessor.loadSettings<CougarLanguageSettings>("language")
         CougarSettingsProcessor.loadSettings<CougarQueueSettings>("queues")
         CougarSettingsProcessor.loadSettings<CougarIterationSettings>("iteration")
+        CougarSettingsProcessor.loadSettings<CougarPrioritySettings>("priority")
 
         actor.reply("${ConsoleChatColor.GREEN}Finished reload in ${ConsoleChatColor.YELLOW}${System.currentTimeMillis() - start}ms${ConsoleChatColor.GREEN}.")
     }
@@ -31,7 +33,7 @@ object SystemCommands
     @Command("tps")
     fun onTps(actor: ConsoleActor)
     {
-        actor.reply("${ConsoleChatColor.RED}So, we don't have a TPS, but here's memory usage!")
+        actor.reply("${ConsoleChatColor.GREEN}So, we don't have a TPS, but here's memory usage!")
         actor.reply("${ConsoleChatColor.GREEN_BOLD}${
             (ManagementFactory.getMemoryMXBean().heapMemoryUsage.used / (1024.0.pow(2.0))).toInt()
         }mb")

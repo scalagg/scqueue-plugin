@@ -8,7 +8,9 @@ import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.server.ScCougarServerBootstrap
 import gg.scala.cougar.server.redis.ScCougarRedisEngine
+import gg.scala.cougar.server.retention.QueuePlayerRetention
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
+import gg.scala.cougar.server.settings.impl.CougarPrioritySettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
@@ -26,6 +28,9 @@ object ScCougarServerMessageConsumer : BananaHandler
 {
     @Inject
     lateinit var platform: ScCougarPlatform
+
+    @Inject
+    lateinit var priority: CougarPrioritySettings
 
     @Configure
     fun configure()
@@ -65,6 +70,34 @@ object ScCougarServerMessageConsumer : BananaHandler
 
         ScCougarServerBootstrap.playerLayer
             .remove(uniqueId)
+    }
+
+    @Subscribe("network-disconnect")
+    fun onNetworkDisconnect(message: Message)
+    {
+        val uniqueId = UUID
+            .fromString(message["uniqueId"])
+            ?: return
+
+        val player = ScCougarServerBootstrap
+            .playerLayer.localCache[uniqueId]
+            ?: return
+
+        // checking if there's a configured
+        // mapping for their priority
+        val duration = priority
+            .priorityToDuration[player.priority]
+
+        if (duration == null)
+        {
+            onQueueRemove(message)
+        } else
+        {
+            // scheduling a removal from the
+            // queue after x amount of millis
+            QueuePlayerRetention
+                .retain(uniqueId, duration, message)
+        }
     }
 
     @Subscribe("queue-remove")
