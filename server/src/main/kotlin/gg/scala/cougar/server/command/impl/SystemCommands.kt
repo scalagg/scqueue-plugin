@@ -1,5 +1,7 @@
 package gg.scala.cougar.server.command.impl
 
+import gg.scala.cougar.server.ScCougarServerBootstrap
+import gg.scala.cougar.server.command.CommandService
 import gg.scala.cougar.server.console.ConsoleChatColor
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
@@ -10,6 +12,7 @@ import revxrsal.commands.annotation.Command
 import revxrsal.commands.cli.ConsoleActor
 import java.lang.management.ManagementFactory
 import kotlin.math.pow
+import kotlin.system.exitProcess
 
 /**
  * @author GrowlyX
@@ -17,6 +20,15 @@ import kotlin.math.pow
  */
 object SystemCommands
 {
+    @Command("stop")
+    fun onStop(actor: ConsoleActor)
+    {
+        actor.reply("${ConsoleChatColor.GREEN}Stopping (and/or rebooting)...")
+        ScCougarServerBootstrap.flavor.close()
+
+        exitProcess(0)
+    }
+
     @Command("reload-config")
     fun onReloadConfig(actor: ConsoleActor)
     {
