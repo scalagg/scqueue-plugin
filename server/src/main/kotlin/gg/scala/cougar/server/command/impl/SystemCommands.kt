@@ -23,7 +23,7 @@ object SystemCommands
     @Command("stop")
     fun onStop(actor: ConsoleActor)
     {
-        actor.reply("${ConsoleChatColor.GREEN}Stopping (and/or rebooting)...")
+        actor.reply("${ConsoleChatColor.GREEN}Stopping (and/or rebooting)...${ConsoleChatColor.RESET}")
         ScCougarServerBootstrap.flavor.close()
 
         exitProcess(0)
