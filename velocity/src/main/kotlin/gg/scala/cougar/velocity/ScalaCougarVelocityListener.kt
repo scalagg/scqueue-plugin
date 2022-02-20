@@ -29,7 +29,7 @@ object ScalaCougarVelocityListener
     fun onLogout(event: DisconnectEvent)
     {
         produce(
-            "queue-remove",
+            "network-disconnect",
             "uniqueId" to event.player.uniqueId
         ).dispatch(banana)
     }
