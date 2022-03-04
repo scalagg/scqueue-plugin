@@ -31,8 +31,8 @@ object CommandService
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
             val poppedArgument = it.popFirstArg()
 
-            return@registerContext engine.queueLayer
-                .localCache.values.firstOrNull { wrapper ->
+            return@registerContext engine.queues
+                .values.firstOrNull { wrapper ->
                     wrapper.serverId.equals(poppedArgument, true)
                 } ?: throw ConditionFailedException(
                     "There is no queue named ${ChatColor.YELLOW}$poppedArgument${ChatColor.RED}."

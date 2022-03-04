@@ -21,7 +21,7 @@ object LeaveQueueCommand : BaseCommand()
     {
         val engine = ScalaCougarSpigotEngine
 
-        val queued = engine.queueLayer.localCache.values
+        val queued = engine.queues.values
             .firstOrNull { it.isInQueue(player.uniqueId) }
             ?: throw ConditionFailedException("You're not currently queued for a server.")
 

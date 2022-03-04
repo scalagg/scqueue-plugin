@@ -8,18 +8,17 @@ import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
+import gg.scala.cougar.common.queue.impl.PrimaryCougarQueueComparator
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.controller.DataStoreObjectControllerCache
+import gg.scala.store.storage.impl.CachedDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
 import java.util.*
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import java.util.logging.Logger
 import kotlin.properties.Delegates
 
@@ -56,6 +55,13 @@ abstract class ScCougarPlatform
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
 
+    private val players: ConcurrentHashMap<UUID, ScCougarPlayer>
+        get() = PrimaryCougarQueueComparator.platform.playerLayer.useLayerWithReturn<CachedDataStoreStorageLayer<ScCougarPlayer>, ConcurrentHashMap<UUID, ScCougarPlayer>>(
+            DataStoreStorageType.CACHE
+        ) {
+            this.connection.getConnection()
+        }
+
     fun loadPlayerResources(
         uniqueId: UUID
     ): CompletableFuture<ScCougarPlayer>
@@ -67,15 +73,15 @@ abstract class ScCougarPlatform
 
     fun removeResources(uniqueId: UUID)
     {
-        playerLayer.remove(uniqueId)
+        playerLayer.delete(uniqueId, DataStoreStorageType.CACHE).join()
         playerLayer.delete(uniqueId, DataStoreStorageType.REDIS).join()
     }
 
     fun setupLayers()
     {
-        playerLayer = DataStoreObjectControllerCache.create(Serializers.gson)
-        instanceLayer = DataStoreObjectControllerCache.create(Serializers.gson)
-        queueLayer = DataStoreObjectControllerCache.create(Serializers.gson)
+        playerLayer = DataStoreObjectControllerCache.create()
+        instanceLayer = DataStoreObjectControllerCache.create()
+        queueLayer = DataStoreObjectControllerCache.create()
     }
 
     var producer by Delegates.notNull<ScCougarServerMessageProducer>()
@@ -105,7 +111,7 @@ abstract class ScCougarPlatform
                     queueLayer
                         .load(uniqueId, DataStoreStorageType.REDIS)
                         .join()?.let { wrapped ->
-                            queueLayer.localCache[uniqueId] = wrapped
+                            queueLayer.save(wrapped, DataStoreStorageType.CACHE).join()
                         }
                 }
             }
@@ -120,7 +126,7 @@ abstract class ScCougarPlatform
 
             for (queue in queues)
             {
-                queueLayer.localCache[queue.key] = queue.value
+                queueLayer.save(queue.value, DataStoreStorageType.CACHE).join()
             }
         }, 1L, 1L, TimeUnit.SECONDS)
 

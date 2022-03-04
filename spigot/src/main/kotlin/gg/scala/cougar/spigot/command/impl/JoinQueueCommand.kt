@@ -24,7 +24,7 @@ object JoinQueueCommand : BaseCommand()
         val engine = ScalaCougarSpigotEngine
 
         if (
-            engine.queueLayer.localCache.values.any {
+            engine.queues.values.any {
                 it.isInQueue(player.uniqueId)
             }
         )
