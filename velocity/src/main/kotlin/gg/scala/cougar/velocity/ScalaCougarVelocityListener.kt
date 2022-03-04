@@ -2,6 +2,7 @@ package gg.scala.cougar.velocity
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
+import com.velocitypowered.api.event.connection.LoginEvent
 import gg.scala.banana.Banana
 import gg.scala.banana.credentials.BananaCredentials
 import gg.scala.banana.options.BananaOptions
@@ -26,11 +27,34 @@ object ScalaCougarVelocityListener
     )
 
     @Subscribe
+    fun onLogout(event: LoginEvent)
+    {
+        produce(
+            "friend-network-update",
+            "uniqueId" to event.player.uniqueId,
+            "type" to "joined",
+        ).apply {
+            dispatch("friends", banana)
+        }
+    }
+
+    @Subscribe
     fun onLogout(event: DisconnectEvent)
     {
         produce(
             "network-disconnect",
             "uniqueId" to event.player.uniqueId
-        ).dispatch(banana)
+        ).apply {
+            dispatch(banana)
+            dispatch("party:backbone", banana)
+        }
+
+        produce(
+            "friend-network-update",
+            "uniqueId" to event.player.uniqueId,
+            "type" to "left",
+        ).apply {
+            dispatch("friends", banana)
+        }
     }
 }

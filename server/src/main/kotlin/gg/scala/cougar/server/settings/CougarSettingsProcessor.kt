@@ -56,7 +56,8 @@ object CougarSettingsProcessor
 
         val reader = File("$id.json").reader()
 
-        settings[T::class] = Serializers.gson.fromJson(reader, T::class.java) as CougarSettingsModel
+        settings[T::class] = Serializers.gson
+            .fromJson(reader, T::class.java) as CougarSettingsModel
     }
 
     fun saveSettingsToFile(
