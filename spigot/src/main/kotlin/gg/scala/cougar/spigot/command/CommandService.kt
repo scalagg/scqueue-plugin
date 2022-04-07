@@ -31,7 +31,7 @@ object CommandService
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
             val poppedArgument = it.popFirstArg()
 
-            return@registerContext engine.queues
+            return@registerContext engine.queueLayer.localCache()
                 .values.firstOrNull { wrapper ->
                     wrapper.serverId.equals(poppedArgument, true)
                 } ?: throw ConditionFailedException(

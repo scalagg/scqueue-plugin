@@ -17,21 +17,14 @@ object PrimaryCougarQueueComparator : Comparator<UUID>
     @Inject
     lateinit var platform: ScCougarPlatform
 
-    private val players: ConcurrentHashMap<UUID, ScCougarPlayer>
-        get() = platform.playerLayer.useLayerWithReturn<CachedDataStoreStorageLayer<ScCougarPlayer>, ConcurrentHashMap<UUID, ScCougarPlayer>>(
-            DataStoreStorageType.CACHE
-        ) {
-            this.connection.getConnection()
-        }
-
     override fun compare(
         first: UUID, second: UUID
     ): Int
     {
         return try
         {
-            val firstCougar = players[first]!!
-            val secondCougar = players[second]!!
+            val firstCougar = platform.playerLayer.localCache()[first]!!
+            val secondCougar = platform.playerLayer.localCache()[second]!!
 
             firstCougar.priority
                 .compareTo(secondCougar.priority)

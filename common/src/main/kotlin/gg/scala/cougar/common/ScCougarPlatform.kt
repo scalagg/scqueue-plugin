@@ -8,15 +8,12 @@ import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
-import gg.scala.cougar.common.queue.impl.PrimaryCougarQueueComparator
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
 import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.controller.DataStoreObjectControllerCache
-import gg.scala.store.storage.impl.CachedDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
-import net.evilblock.cubed.serializers.Serializers
 import java.util.*
 import java.util.concurrent.*
 import java.util.logging.Logger
@@ -54,13 +51,6 @@ abstract class ScCougarPlatform
     abstract fun updateLocalInstance()
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
-
-    private val players: ConcurrentHashMap<UUID, ScCougarPlayer>
-        get() = PrimaryCougarQueueComparator.platform.playerLayer.useLayerWithReturn<CachedDataStoreStorageLayer<ScCougarPlayer>, ConcurrentHashMap<UUID, ScCougarPlayer>>(
-            DataStoreStorageType.CACHE
-        ) {
-            this.connection.getConnection()
-        }
 
     fun loadPlayerResources(
         uniqueId: UUID
@@ -126,7 +116,7 @@ abstract class ScCougarPlatform
 
             for (queue in queues)
             {
-                queueLayer.save(queue.value, DataStoreStorageType.CACHE).join()
+                queueLayer.localCache()[queue.key] = queue.value
             }
         }, 1L, 1L, TimeUnit.SECONDS)
 

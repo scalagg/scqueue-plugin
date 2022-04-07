@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import org.bukkit.ChatColor
+import org.bukkit.entity.Horse
 import org.bukkit.entity.Player
 
 /**
@@ -21,7 +22,7 @@ object LeaveQueueCommand : BaseCommand()
     {
         val engine = ScalaCougarSpigotEngine
 
-        val queued = engine.queues.values
+        val queued = engine.queueLayer.localCache().values
             .firstOrNull { it.isInQueue(player.uniqueId) }
             ?: throw ConditionFailedException("You're not currently queued for a server.")
 

@@ -85,7 +85,7 @@ object BackboneService
         val serverId = message["serverId"]!!
         val engine = ScalaCougarSpigotEngine
 
-        val queue = engine.queues.values
+        val queue = engine.queueLayer.localCache().values
             .firstOrNull {
                 it.serverId.equals(serverId, true)
             } ?: return

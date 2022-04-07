@@ -60,7 +60,7 @@ object ScCougarServerMessageConsumer : BananaHandler
             ?: return
 
         ScCougarServerBootstrap.playerLayer
-            .localCache[uniqueId] = cougarPlayer
+            .localCache()[uniqueId] = cougarPlayer
     }
 
     @Subscribe("player-disconnect")
@@ -70,6 +70,7 @@ object ScCougarServerMessageConsumer : BananaHandler
             ?: return
 
         ScCougarServerBootstrap.playerLayer
+            .localCache()
             .remove(uniqueId)
     }
 
@@ -81,7 +82,7 @@ object ScCougarServerMessageConsumer : BananaHandler
             ?: return
 
         val player = ScCougarServerBootstrap
-            .playerLayer.localCache[uniqueId]
+            .playerLayer.localCache()[uniqueId]
             ?: return
 
         // checking if there's a configured

@@ -28,13 +28,6 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
 
     private lateinit var instance: ScCougarInstance
 
-    val queues: ConcurrentHashMap<UUID, CougarQueueWrapper>
-        get() = platform.queueLayer.useLayerWithReturn<CachedDataStoreStorageLayer<CougarQueueWrapper>, ConcurrentHashMap<UUID, CougarQueueWrapper>>(
-            DataStoreStorageType.CACHE
-        ) {
-            this.connection.getConnection()
-        }
-
     override fun configure(credentials: BananaCredentials)
     {
         super.setupLayers()
