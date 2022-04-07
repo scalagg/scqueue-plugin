@@ -1,27 +1,19 @@
 package gg.scala.cougar.spigot.backbone
 
-import com.google.common.io.ByteStreams
 import com.google.gson.reflect.TypeToken
-import gg.scala.banana.Banana
-import gg.scala.banana.annotate.Subscribe
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.banana.message.Message
-import gg.scala.banana.options.BananaOptions
-import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer
+import gg.scala.aware.AwareBuilder
+import gg.scala.aware.annotation.Subscribe
+import gg.scala.aware.codec.codecs.interpretation.AwareMessageCodec
+import gg.scala.aware.message.AwareMessage
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.flavor.inject.Inject
+import gg.scala.flavor.service.Close
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.flavor.service.ignore.IgnoreAutoScan
-import gg.scala.store.ScalaDataStoreShared
-import gg.scala.store.spigot.ScalaDataStoreSpigot
-import gg.scala.store.spigot.ScalaDataStoreSpigotImpl
-import net.evilblock.cubed.serializers.Serializers
+import gg.scala.lemon.redirection.impl.VelocityRedirectSystem
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.entity.Player
 import java.lang.reflect.Type
 import java.util.*
 
@@ -32,57 +24,47 @@ import java.util.*
 @Service
 object BackboneService
 {
-    @Inject
-    lateinit var platform: ScCougarPlatform
-
-    private val typeToken: Type = object : TypeToken<Map<UUID, String>>() {}.type
-
-    val banana by lazy {
-        Banana(
-            BananaCredentials(
-                address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
-                port = ScalaDataStoreSpigot.INSTANCE.redis.port,
-                password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
-            ),
-            BananaOptions(
-                channel = "cougar:backbone",
-                executor = platform.producer.executor
-            )
-        )
-    }
+    private val typeToken: Type =
+        object : TypeToken<Map<UUID, String>>()
+        {}.type
 
     @Inject
     lateinit var plugin: ScalaCougarSpigotPlugin
 
+    private val aware by lazy {
+        AwareBuilder
+            .of<AwareMessage>("cougar:bukkit")
+            .codec(AwareMessageCodec)
+            .build()
+    }
+
     @Configure
     fun configure()
     {
-        val bukkitBackbone = Banana(
-            BananaCredentials(
-                address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
-                port = ScalaDataStoreSpigot.INSTANCE.redis.port,
-                password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
-            ),
-            BananaOptions(
-                channel = "cougar:bukkit",
-                executor = platform.producer.executor
+        aware.listen(this)
+        aware.connect()
+
+        plugin.server.messenger
+            .registerOutgoingPluginChannel(
+                plugin, "BungeeCord"
             )
-        )
+    }
 
-        bukkitBackbone.registerClass(this)
-        bukkitBackbone.subscribe()
-
-        plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
+    @Close
+    fun close()
+    {
+        aware.shutdown()
     }
 
     @Subscribe("send-player")
-    fun onSendPlayer(message: Message)
+    fun onSendPlayer(message: AwareMessage)
     {
-        val uniqueId = UUID.fromString(
-            message["uniqueId"]
-        ) ?: return
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
-        val serverId = message["serverId"]!!
+        val serverId = message
+            .retrieve<String>("serverId")
+
         val engine = ScalaCougarSpigotEngine
 
         val queue = engine.queueLayer.localCache().values
@@ -91,20 +73,20 @@ object BackboneService
             } ?: return
 
         Bukkit.getPlayer(uniqueId)?.apply {
-            plugin.server.scheduler.runTaskLater(plugin, {
-                sendMessage("${ChatColor.GREEN}You're now being sent to ${ChatColor.YELLOW}${queue.fancyDisplayName}${ChatColor.GREEN}.")
-                sendToServer(this, serverId)
-            }, 1L)
+            sendMessage(
+                "${ChatColor.GREEN}You're now being sent to ${ChatColor.YELLOW}${queue.fancyDisplayName}${ChatColor.GREEN}."
+            )
+
+            VelocityRedirectSystem
+                .redirect(this, serverId)
         }
     }
 
     @Subscribe("queue-update-stream")
-    fun onQueueUpdates(message: Message)
+    fun onQueueUpdates(message: AwareMessage)
     {
-        val messages = Serializers.gson
-            .fromJson<Map<UUID, String>>(
-                message["messages"], typeToken
-            )
+        val messages = message
+            .retrieve<Map<UUID, String>>("messages")
 
         for (onlinePlayer in Bukkit.getOnlinePlayers())
         {
@@ -112,21 +94,6 @@ object BackboneService
                 ?: continue
 
             onlinePlayer.sendMessage(messageForPlayer)
-        }
-    }
-
-    private fun sendToServer(player: Player, server: String)
-    {
-        try
-        {
-            val out = ByteStreams.newDataOutput()
-            out.writeUTF("Connect")
-            out.writeUTF(server)
-
-            player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray())
-        } catch (e: Exception)
-        {
-            e.printStackTrace()
         }
     }
 }
