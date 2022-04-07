@@ -1,6 +1,6 @@
 package gg.scala.cougar.server.retention
 
-import gg.scala.banana.message.Message
+import gg.scala.aware.message.AwareMessage
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.server.consumer.ScCougarServerMessageConsumer
 import gg.scala.flavor.inject.Inject
@@ -19,7 +19,7 @@ object QueuePlayerRetention
     lateinit var platform: ScCougarPlatform
 
     fun retain(
-        uniqueId: UUID, duration: Long, message: Message
+        uniqueId: UUID, duration: Long, message: AwareMessage
     )
     {
         platform.executor.scheduleAtFixedRate(
@@ -30,7 +30,7 @@ object QueuePlayerRetention
 
     class RetentionRunnable(
         private val uniqueId: UUID,
-        private val data: Message
+        private val data: AwareMessage
     ) : Runnable
     {
         override fun run()
@@ -39,7 +39,7 @@ object QueuePlayerRetention
             // reconnected- we won't be
             // removing them in this case.
             val player = platform.playerLayer
-                .localCache[uniqueId]
+                .localCache()[uniqueId]
 
             if (player != null)
                 return

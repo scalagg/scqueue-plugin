@@ -1,7 +1,7 @@
 package gg.scala.cougar.spigot.command
 
-import co.aikar.commands.ConditionFailedException
-import co.aikar.commands.PaperCommandManager
+import net.evilblock.cubed.acf.ConditionFailedException
+import net.evilblock.cubed.acf.PaperCommandManager
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
@@ -10,6 +10,7 @@ import gg.scala.cougar.spigot.command.impl.LeaveQueueCommand
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
+import net.evilblock.cubed.command.manager.CubedCommandManager
 import org.bukkit.ChatColor
 
 /**
@@ -26,7 +27,7 @@ object CommandService
     fun configure()
     {
         val engine = ScalaCougarSpigotEngine
-        val manager = PaperCommandManager(plugin)
+        val manager = CubedCommandManager(plugin)
 
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
             val poppedArgument = it.popFirstArg()

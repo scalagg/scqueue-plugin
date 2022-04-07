@@ -3,7 +3,6 @@ package gg.scala.cougar.spigot.listener
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
-import gg.scala.cougar.spigot.backbone.BackboneService
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
@@ -36,7 +35,7 @@ object ListenerService
                         ScCougarServerMessageProducer.produce(
                             "player-connect",
                             "uniqueId" to it.player.uniqueId
-                        ).dispatch(BackboneService.banana)
+                        ).publish()
                     }
                 }
             }
@@ -51,7 +50,7 @@ object ListenerService
                 ScCougarServerMessageProducer.produce(
                     "player-disconnect",
                     "uniqueId" to it.player.uniqueId
-                ).dispatch(BackboneService.banana)
+                ).publish()
             }
             .bindWith(plugin)
     }

@@ -5,7 +5,6 @@ import gg.scala.cougar.common.message.ScCougarServerMessageProducer.Companion.pr
 
 import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
-import gg.scala.flavor.inject.Inject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -37,7 +36,7 @@ class PrimaryCougarQueue(
                     "queue-update",
                     "uniqueId" to wrapped.identifier
                 ).dispatch(
-                    ScCougarPlatform.INSTANCE.producer.banana
+                    ScCougarPlatform.INSTANCE.producer.aware
                 )
             }
     }

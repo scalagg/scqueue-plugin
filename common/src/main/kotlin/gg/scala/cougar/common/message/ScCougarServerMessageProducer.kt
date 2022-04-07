@@ -1,11 +1,9 @@
 package gg.scala.cougar.common.message
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
-import gg.scala.banana.Banana
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.banana.message.Message
-import gg.scala.banana.options.BananaOptions
-import net.evilblock.cubed.serializers.Serializers
+import gg.scala.aware.AwareBuilder
+import gg.scala.aware.codec.codecs.interpretation.AwareMessageCodec
+import gg.scala.aware.message.AwareMessage
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
@@ -13,9 +11,7 @@ import java.util.concurrent.ScheduledExecutorService
  * @author GrowlyX
  * @since 1/12/2022
  */
-class ScCougarServerMessageProducer(
-    conf: BananaCredentials
-)
+object ScCougarServerMessageProducer
 {
     val executor: ScheduledExecutorService = Executors
         .newSingleThreadScheduledExecutor(
@@ -24,31 +20,27 @@ class ScCougarServerMessageProducer(
                 .build()
         )
 
-    val banana = Banana(
-        conf, BananaOptions(
-            channel = "cougar:backbone",
-            gson = Serializers.gson,
-            executor = executor
-        )
-    )
+    val aware = AwareBuilder
+        .of<AwareMessage>("cougar:backbone")
+        .codec(AwareMessageCodec)
+        .build()
 
-    companion object
+    @JvmStatic
+    fun produce(
+        packet: String,
+        vararg arguments: Pair<String, Any>
+    ): AwareMessage
     {
-        @JvmStatic
-        fun produce(
-            packet: String,
-            vararg arguments: Pair<String, Any>
-        ): Message
+        val message = AwareMessage
+            .of(packet, this.aware)
+
+        for (argument in arguments)
         {
-            val message = Message(packet)
-
-            for (argument in arguments)
-            {
-                message[argument.first] = argument
-                    .second.toString()
-            }
-
-            return message
+            message.assign(
+                argument.first, argument.second
+            )
         }
+
+        return message
     }
 }

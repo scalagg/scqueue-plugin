@@ -1,6 +1,5 @@
 package gg.scala.cougar.server.iterator
 
-import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
@@ -9,7 +8,6 @@ import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
@@ -25,9 +23,6 @@ import java.util.concurrent.TimeUnit
 @Service("Queue Update Stream")
 object ScCougarQueueUpdateStreamIterator : Runnable
 {
-    @Inject
-    lateinit var platform: ScCougarPlatform
-
     @Inject
     lateinit var language: CougarLanguageSettings
 
@@ -87,9 +82,8 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 "queue-update-stream",
                 "queueId" to queue.targetServerId,
                 "messages" to serializedMessageMap
-            ).dispatch(
-                "cougar:bukkit",
-                platform.producer.banana
+            ).publish(
+                channel = "cougar:bukkit"
             )
         }
     }

@@ -8,7 +8,6 @@ import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
 import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.details.DataStoreRedisConnectionDetails
 
 /**
  * @author GrowlyX
