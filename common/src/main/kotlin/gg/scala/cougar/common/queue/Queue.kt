@@ -11,12 +11,26 @@ import java.util.*
  * @author GrowlyX
  * @since 12/24/2021
  */
-open class Queue<T>(comparator: Comparator<T>)
+open class Queue<T>(
+    private val comparator: Comparator<T>
+)
 {
     @Transient
-    private var priorityQueue = PriorityQueue(comparator)
+    private lateinit var priorityQueue: PriorityQueue<T>
 
-    fun getHandle() = priorityQueue
+    fun getHandle(): PriorityQueue<T>
+    {
+        return try
+        {
+            this.priorityQueue
+        } catch (ignored: Exception)
+        {
+            this.priorityQueue =
+                PriorityQueue(comparator)
+
+            this.priorityQueue
+        }
+    }
 
     fun setHandle(priorityQueue: PriorityQueue<T>)
     {

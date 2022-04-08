@@ -75,13 +75,10 @@ object ScCougarQueueUpdateStreamIterator : Runnable
                 messageMap[player] = "$baseMessage\n "
             }
 
-            val serializedMessageMap = Serializers
-                .gson.toJson(messageMap)
-
             ScCougarServerMessageProducer.produce(
                 "queue-update-stream",
                 "queueId" to queue.targetServerId,
-                "messages" to serializedMessageMap
+                "messages" to messageMap
             ).publish(
                 channel = "cougar:bukkit"
             )
