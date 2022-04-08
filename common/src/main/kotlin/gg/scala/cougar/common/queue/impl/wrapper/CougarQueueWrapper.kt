@@ -10,7 +10,7 @@ import java.util.*
 class CougarQueueWrapper(
     val serverId: String,
     val fancyDisplayName: String,
-    val internalQueue: LinkedList<UUID>,
+    private val internalQueue: LinkedList<UUID>,
     val allowedProtocols: List<Int> = mutableListOf(47),
     override val identifier: UUID = UUID.randomUUID(),
 ) : IDataStoreObject

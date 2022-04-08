@@ -1,13 +1,9 @@
 package gg.scala.cougar.server.consumer
 
-import gg.scala.banana.Banana
-import gg.scala.banana.annotate.Subscribe
-import gg.scala.banana.message.Message
-import gg.scala.banana.options.BananaOptions
-import gg.scala.banana.subscribe.marker.BananaHandler
+import gg.scala.aware.annotation.Subscribe
+import gg.scala.aware.message.AwareMessage
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.server.ScCougarServerBootstrap
-import gg.scala.cougar.server.redis.ScCougarRedisEngine
 import gg.scala.cougar.server.retention.QueuePlayerRetention
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarPrioritySettings
@@ -16,7 +12,6 @@ import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.store.storage.type.DataStoreStorageType
-import net.evilblock.cubed.serializers.Serializers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -25,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * @since 1/12/2022
  */
 @Service("Message Consumer")
-object ScCougarServerMessageConsumer : BananaHandler
+object ScCougarServerMessageConsumer
 {
     @Inject
     lateinit var platform: ScCougarPlatform
@@ -36,24 +31,14 @@ object ScCougarServerMessageConsumer : BananaHandler
     @Configure
     fun configure()
     {
-        val banana = Banana(
-            ScCougarRedisEngine.bananaWrapper,
-            BananaOptions(
-                channel = "cougar:backbone",
-                gson = Serializers.gson,
-                executor = platform.producer.executor
-            )
-        )
-
-        banana.registerClass(this)
-        banana.subscribe()
+        platform.producer.aware.listen(this)
     }
 
     @Subscribe("player-connect")
-    fun onPlayerConnect(message: Message)
+    fun onPlayerConnect(message: AwareMessage)
     {
-        val uniqueId = UUID.fromString(message["uniqueId"])
-            ?: return
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
         val cougarPlayer = ScCougarPlatform.INSTANCE.playerLayer
             .load(uniqueId, DataStoreStorageType.REDIS).join()
@@ -64,10 +49,10 @@ object ScCougarServerMessageConsumer : BananaHandler
     }
 
     @Subscribe("player-disconnect")
-    fun onPlayerDisconnect(message: Message)
+    fun onPlayerDisconnect(message: AwareMessage)
     {
-        val uniqueId = UUID.fromString(message["uniqueId"])
-            ?: return
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
         ScCougarServerBootstrap.playerLayer
             .localCache()
@@ -75,11 +60,10 @@ object ScCougarServerMessageConsumer : BananaHandler
     }
 
     @Subscribe("network-disconnect")
-    fun onNetworkDisconnect(message: Message)
+    fun onNetworkDisconnect(message: AwareMessage)
     {
-        val uniqueId = UUID
-            .fromString(message["uniqueId"])
-            ?: return
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
         val player = ScCougarServerBootstrap
             .playerLayer.localCache()[uniqueId]
@@ -107,16 +91,16 @@ object ScCougarServerMessageConsumer : BananaHandler
     }
 
     @Subscribe("queue-remove")
-    fun onQueueRemove(message: Message)
+    fun onQueueRemove(message: AwareMessage)
     {
         val queues = CougarSettingsProcessor
             .locate<CougarQueueSettings>()!!
 
-        val uniqueId = UUID
-            .fromString(message["uniqueId"])
-            ?: return
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
-        val queueId = message["queueId"]
+        val queueId = message
+            .retrieveNullable<String>("queueId")
 
         if (queueId == null)
         {
@@ -143,15 +127,16 @@ object ScCougarServerMessageConsumer : BananaHandler
     }
 
     @Subscribe("queue-add")
-    fun onQueueAdd(message: Message)
+    fun onQueueAdd(message: AwareMessage)
     {
         val queues = CougarSettingsProcessor
             .locate<CougarQueueSettings>()!!
-        val serverId = message["serverId"]
 
-        val uniqueId = UUID
-            .fromString(message["uniqueId"])
-            ?: return
+        val serverId = message
+            .retrieve<String>("serverId")
+
+        val uniqueId = message
+            .retrieve<UUID>("uniqueId")
 
         val queue = queues.queues.firstOrNull {
             it.targetServerId.equals(serverId, true)

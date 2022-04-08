@@ -1,9 +1,5 @@
 package gg.scala.cougar.spigot
 
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import gg.scala.cougar.spigot.backbone.BackboneService
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.CubedVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.ProtocolSupportProvider
@@ -15,8 +11,6 @@ import gg.scala.cougar.spigot.server.impl.DefaultServerDetailsProvider
 import gg.scala.cougar.spigot.server.impl.LemonServerDetailsProvider
 import gg.scala.flavor.Flavor
 import gg.scala.flavor.FlavorOptions
-import gg.scala.store.spigot.ScalaDataStoreSpigot
-import gg.scala.store.spigot.ScalaDataStoreSpigotImpl
 import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
@@ -55,11 +49,7 @@ class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
         ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
         ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
 
-        ScalaCougarSpigotEngine.configure(BananaCredentials(
-            address = ScalaDataStoreSpigot.INSTANCE.redis.hostname,
-            port = ScalaDataStoreSpigot.INSTANCE.redis.port,
-            password = ScalaDataStoreSpigot.INSTANCE.redis.password ?: ""
-        ))
+        ScalaCougarSpigotEngine.configure()
     }
 
     private fun registerProviders()

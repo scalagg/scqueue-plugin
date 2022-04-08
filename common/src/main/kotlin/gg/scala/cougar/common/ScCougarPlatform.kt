@@ -1,10 +1,6 @@
 package gg.scala.cougar.common
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
-import gg.scala.banana.annotate.Subscribe
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.banana.message.Message
-import gg.scala.banana.subscribe.marker.BananaHandler
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
@@ -81,33 +77,24 @@ abstract class ScCougarPlatform
         INSTANCE = this
     }
 
-    open fun configure(credentials: BananaCredentials)
+    open fun configure()
     {
         flavor.bind<ScCougarPlatform>() to this
 
         flavor.bind<DataStoreObjectController<ScCougarPlayer>>() to playerLayer
         flavor.bind<DataStoreObjectController<ScCougarInstance>>() to instanceLayer
 
-        producer = ScCougarServerMessageProducer(credentials)
+        producer = ScCougarServerMessageProducer
+        producer.aware.listen("queue-update") {
+            val uniqueId = this
+                .retrieve<UUID>("uniqueId")
 
-        producer.banana.registerClass(object : BananaHandler
-        {
-            @Subscribe("queue-update")
-            fun onQueueUpdate(message: Message)
-            {
-                message["uniqueId"]?.let {
-                    val uniqueId = UUID.fromString(it)
-
-                    queueLayer
-                        .load(uniqueId, DataStoreStorageType.REDIS)
-                        .join()?.let { wrapped ->
-                            queueLayer.save(wrapped, DataStoreStorageType.CACHE).join()
-                        }
+            queueLayer
+                .load(uniqueId, DataStoreStorageType.REDIS)
+                .join()?.let { wrapped ->
+                    queueLayer.save(wrapped, DataStoreStorageType.CACHE).join()
                 }
-            }
-        })
-
-        producer.banana.subscribe()
+        }
 
         producer.executor.scheduleAtFixedRate({
             val queues = queueLayer
@@ -135,11 +122,19 @@ abstract class ScCougarPlatform
         }
 
         flavor.startup()
+
+        producer.aware.connect()
     }
 
     fun close()
     {
         flavor.close()
+
+        producer.executor
+            .shutdownNow()
+
+        producer.aware
+            .shutdown()
 
         if (shouldTrackInstance())
         {

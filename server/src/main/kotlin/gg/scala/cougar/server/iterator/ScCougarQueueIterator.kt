@@ -1,6 +1,6 @@
 package gg.scala.cougar.server.iterator
 
-import gg.scala.cougar.common.ScCougarPlatform
+import gg.scala.aware.thread.AwareThreadContext
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
@@ -9,7 +9,6 @@ import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
@@ -24,9 +23,6 @@ import java.util.concurrent.TimeUnit
 @Service("Queue Iterator")
 object ScCougarQueueIterator : Runnable
 {
-    @Inject
-    lateinit var platform: ScCougarPlatform
-
     @Inject
     lateinit var settings: CougarQueueSettings
 
@@ -98,9 +94,9 @@ object ScCougarQueueIterator : Runnable
                     "send-player",
                     "uniqueId" to uniqueId,
                     "serverId" to queue.targetServerId
-                ).dispatch(
-                    "cougar:bukkit",
-                    platform.producer.banana
+                ).publish(
+                    channel = "cougar:bukkit",
+                    context = AwareThreadContext.SYNC
                 )
             }
         }

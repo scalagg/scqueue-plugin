@@ -3,10 +3,10 @@ package gg.scala.cougar.spigot.command.impl
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.command.CommandService
-import co.aikar.commands.BaseCommand
-import co.aikar.commands.ConditionFailedException
-import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandPermission
+import net.evilblock.cubed.acf.BaseCommand
+import net.evilblock.cubed.acf.ConditionFailedException
+import net.evilblock.cubed.acf.annotation.CommandAlias
+import net.evilblock.cubed.acf.annotation.CommandPermission
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -52,9 +52,7 @@ object JoinQueueCommand : BaseCommand()
             "queue-add",
             "serverId" to server.serverId,
             "uniqueId" to player.uniqueId
-        ).dispatch(
-            ScalaCougarSpigotEngine.producer.banana
-        )
+        ).publish()
 
         player.sendMessage("${ChatColor.GREEN}You've been added to the ${ChatColor.YELLOW}${server.fancyDisplayName}${ChatColor.GREEN} queue.")
     }

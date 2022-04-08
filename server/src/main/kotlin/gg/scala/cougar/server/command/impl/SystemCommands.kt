@@ -1,7 +1,6 @@
 package gg.scala.cougar.server.command.impl
 
 import gg.scala.cougar.server.ScCougarServerBootstrap
-import gg.scala.cougar.server.command.CommandService
 import gg.scala.cougar.server.console.ConsoleChatColor
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings

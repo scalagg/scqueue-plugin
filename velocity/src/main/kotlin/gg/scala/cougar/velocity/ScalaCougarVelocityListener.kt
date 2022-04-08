@@ -3,11 +3,10 @@ package gg.scala.cougar.velocity
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
-import gg.scala.banana.Banana
-import gg.scala.banana.credentials.BananaCredentials
-import gg.scala.banana.options.BananaOptions
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer.Companion.produce
-import gg.scala.store.velocity.ScalaDataStoreVelocity
+import gg.scala.aware.AwareHub
+import gg.scala.aware.uri.WrappedAwareUri
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
+import net.evilblock.cubed.serializers.Serializers
 
 /**
  * @author GrowlyX
@@ -15,16 +14,14 @@ import gg.scala.store.velocity.ScalaDataStoreVelocity
  */
 object ScalaCougarVelocityListener
 {
-    private val banana = Banana(
-        BananaCredentials(
-            address = ScalaDataStoreVelocity.INSTANCE.redis.hostname,
-            port = ScalaDataStoreVelocity.INSTANCE.redis.port,
-            password = ScalaDataStoreVelocity.INSTANCE.redis.password ?: ""
-        ),
-        BananaOptions(
-            channel = "cougar:backbone"
-        )
-    )
+    init
+    {
+        AwareHub.configure(
+            WrappedAwareUri()
+        ) {
+            Serializers.gson
+        }
+    }
 
     @Subscribe
     fun onLogout(event: LoginEvent)
@@ -34,7 +31,7 @@ object ScalaCougarVelocityListener
             "uniqueId" to event.player.uniqueId,
             "type" to "joined",
         ).apply {
-            dispatch("friends", banana)
+            publish(channel = "friends")
         }
     }
 
@@ -45,8 +42,7 @@ object ScalaCougarVelocityListener
             "network-disconnect",
             "uniqueId" to event.player.uniqueId
         ).apply {
-            dispatch(banana)
-            dispatch("party:backbone", banana)
+            publish(channel = "party:backbone")
         }
 
         produce(
@@ -54,7 +50,7 @@ object ScalaCougarVelocityListener
             "uniqueId" to event.player.uniqueId,
             "type" to "left",
         ).apply {
-            dispatch("friends", banana)
+            publish(channel = "friends")
         }
     }
 }

@@ -1,11 +1,11 @@
 package gg.scala.cougar.common.queue.impl
 
+import gg.scala.aware.thread.AwareThreadContext
 import gg.scala.cougar.common.ScCougarPlatform
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer.Companion.produce
+import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
 
 import gg.scala.cougar.common.queue.Queue
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
-import gg.scala.flavor.inject.Inject
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture
 class PrimaryCougarQueue(
     val targetServerId: String,
     val fancyDisplayName: String,
-    val allowedProtocols: List<Int> =
+    private val allowedProtocols: List<Int> =
         mutableListOf(47)
 ) : Queue<UUID>(
     PrimaryCougarQueueComparator
@@ -36,8 +36,8 @@ class PrimaryCougarQueue(
                 produce(
                     "queue-update",
                     "uniqueId" to wrapped.identifier
-                ).dispatch(
-                    ScCougarPlatform.INSTANCE.producer.banana
+                ).publish(
+                    AwareThreadContext.SYNC
                 )
             }
     }
