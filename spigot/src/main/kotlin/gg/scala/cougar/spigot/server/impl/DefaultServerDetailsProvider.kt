@@ -10,16 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 object DefaultServerDetailsProvider : ServerDetailsProvider
 {
-    private var id: String
-
-    init
-    {
+    private val id by lazy {
         val plugin =
             ScalaCougarSpigotPlugin.instance
 
         plugin.saveDefaultConfig()
-        id = plugin.config.getString("id")
+        plugin.config.getString("id")
     }
 
-    override fun getServerName() = id
+    override fun getServerName(): String = id
 }
