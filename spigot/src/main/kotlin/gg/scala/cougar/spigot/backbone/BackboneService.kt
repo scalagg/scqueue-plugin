@@ -42,7 +42,10 @@ object BackboneService
     fun configure()
     {
         aware.listen(this)
+
         aware.connect()
+            .toCompletableFuture()
+            .join()
 
         plugin.server.messenger
             .registerOutgoingPluginChannel(
@@ -86,7 +89,9 @@ object BackboneService
     fun onQueueUpdates(message: AwareMessage)
     {
         val messages = message
-            .retrieve<Map<UUID, String>>("messages")
+            .retrieve<MutableMap<UUID, String>>("messages")
+
+        println("received")
 
         for (onlinePlayer in Bukkit.getOnlinePlayers())
         {

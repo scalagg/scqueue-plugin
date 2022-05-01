@@ -26,7 +26,7 @@ class PrimaryCougarQueue(
     fun pushDataUpdates(): CompletableFuture<Void>
     {
         val wrapped = CougarQueueWrapper(
-            targetServerId, fancyDisplayName, LinkedList<UUID>().also { it.addAll(getHandle()) },
+            targetServerId, fancyDisplayName, LinkedList(getHandle()),
             allowedProtocols, ScCougarPlatform.INSTANCE.queueDatabaseIds[targetServerId]!!
         )
 

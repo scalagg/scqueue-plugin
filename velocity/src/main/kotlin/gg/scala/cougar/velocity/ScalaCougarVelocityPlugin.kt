@@ -31,7 +31,7 @@ constructor(
     @Subscribe(order = PostOrder.LAST)
     fun onProxyInit(event: ProxyInitializeEvent)
     {
-        server.eventManager.register(
+        this.server.eventManager.register(
             this, ScalaCougarVelocityListener
         )
     }
