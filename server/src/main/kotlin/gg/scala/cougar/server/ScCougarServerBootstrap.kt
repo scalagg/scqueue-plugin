@@ -32,7 +32,7 @@ object ScCougarServerBootstrap : ScCougarPlatform()
 
         flavor = Flavor
             .create<ScCougarServerBootstrap>(
-                FlavorOptions(LOGGER)
+                FlavorOptions(LOGGER, "gg.scala.cougar")
             )
         flavor.bind<ScCougarPlatform>() to this
 

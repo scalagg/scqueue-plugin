@@ -3,6 +3,7 @@ package gg.scala.cougar.server.iterator
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.ScCougarServerBootstrap
+import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
@@ -29,6 +30,9 @@ object ScCougarQueueUpdateStreamIterator : Runnable
     @Inject
     lateinit var queues: CougarQueueSettings
 
+    @Inject
+    lateinit var iteration: CougarIterationSettings
+
     @Configure
     fun configure()
     {
@@ -36,7 +40,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
 
         executor.scheduleAtFixedRate(
             this, 500L,
-            ScCougarQueueIterator.iteration.updateStreamIterationDelay,
+            iteration.updateStreamIterationDelay,
             TimeUnit.MILLISECONDS
         )
     }

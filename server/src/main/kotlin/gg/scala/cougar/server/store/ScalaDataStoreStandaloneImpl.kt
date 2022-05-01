@@ -7,7 +7,7 @@ import gg.scala.store.connection.mongo.AbstractDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.UriDataStoreMongoConnection
 import gg.scala.store.connection.mongo.impl.details.DataStoreMongoConnectionDetails
 import gg.scala.store.connection.redis.AbstractDataStoreRedisConnection
-import gg.scala.store.connection.redis.impl.NoAuthDataStoreRedisConnection
+import gg.scala.store.connection.redis.impl.DataStoreRedisConnection
 
 /**
  * @author GrowlyX
@@ -17,9 +17,7 @@ object ScalaDataStoreStandaloneImpl : ScalaDataStoreShared()
 {
     override fun getNewRedisConnection(): AbstractDataStoreRedisConnection
     {
-        return NoAuthDataStoreRedisConnection(
-            ScCougarRedisEngine.dsWrapper
-        )
+        return DataStoreRedisConnection()
     }
 
     override fun getNewMongoConnection(): AbstractDataStoreMongoConnection

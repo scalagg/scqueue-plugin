@@ -1,6 +1,11 @@
 package gg.scala.cougar.spigot.protocol.impl
 
+import gg.scala.commons.annotations.plugin.SoftDependency
+import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
+import gg.scala.flavor.service.Configure
+import gg.scala.flavor.service.Service
+import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import net.evilblock.cubed.util.nms.MinecraftProtocol
 import org.bukkit.entity.Player
 
@@ -8,8 +13,18 @@ import org.bukkit.entity.Player
  * @author GrowlyX
  * @since 1/15/2022
  */
-class CubedVersionProvider : ProtocolVersionProvider
+@Service
+@IgnoreAutoScan
+@SoftDependency("scala-commons")
+object CubedVersionProvider : ProtocolVersionProvider
 {
+    @Configure
+    fun configure()
+    {
+        ScalaCougarSpigotPlugin
+            .instance.protocolVersionProvider = this
+    }
+
     override fun getProtocolVersion(player: Player): Int
     {
         return MinecraftProtocol.getPlayerVersion(player)

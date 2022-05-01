@@ -43,12 +43,10 @@ object ScCougarQueueIterator : Runnable
 
     override fun run()
     {
-        try
-        {
+        kotlin.runCatching {
             tick()
-        } catch (e: Exception)
-        {
-            e.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 
