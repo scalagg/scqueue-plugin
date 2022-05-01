@@ -39,8 +39,7 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     companion object
     {
         @JvmStatic
-        val instance by Plugins
-            .plugin<ScalaCougarSpigotPlugin>()
+        lateinit var instance: ScalaCougarSpigotPlugin
     }
 
     lateinit var priorityProvider: PlayerPriorityProvider
@@ -52,6 +51,8 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     @ContainerEnable
     fun containerEnable()
     {
+        instance = this
+
         ScalaCougarSpigotEngine.preLoad()
 
         flavor().inject(ScalaCougarSpigotEngine)
