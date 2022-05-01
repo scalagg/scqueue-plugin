@@ -82,7 +82,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
             ScCougarServerMessageProducer.produce(
                 "queue-update-stream",
                 "queueId" to queue.targetServerId,
-                "messages" to messageMap
+                "messages" to Serializers.gson.toJson(messageMap)
             ).publish(
                 channel = "cougar:bukkit"
             )

@@ -48,6 +48,8 @@ abstract class ScCougarPlatform
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
 
+    open fun configureFlavor() = true
+
     fun loadPlayerResources(
         uniqueId: UUID
     ): CompletableFuture<ScCougarPlayer>
@@ -134,14 +136,21 @@ abstract class ScCougarPlatform
             }, 1L, 1L, TimeUnit.SECONDS)
         }
 
-        flavor.startup()
+        if (configureFlavor())
+        {
+            flavor.startup()
+        }
 
         producer.aware.connect()
+            .toCompletableFuture().join()
     }
 
     fun close()
     {
-        flavor.close()
+        if (configureFlavor())
+        {
+            flavor.close()
+        }
 
         producer.executor
             .shutdownNow()

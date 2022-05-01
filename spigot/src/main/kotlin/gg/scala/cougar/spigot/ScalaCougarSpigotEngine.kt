@@ -47,6 +47,11 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
         )
     }
 
+    override fun configureFlavor(): Boolean
+    {
+        return false
+    }
+
     override fun updateLocalInstance()
     {
         instance.whitelistedPlayers = Bukkit
