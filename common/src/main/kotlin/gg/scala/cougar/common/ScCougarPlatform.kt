@@ -48,13 +48,28 @@ abstract class ScCougarPlatform
     abstract fun getLocalInstance(): ScCougarInstance
     abstract fun shouldTrackInstance(): Boolean
 
+    open fun configureFlavor() = true
+
     fun loadPlayerResources(
         uniqueId: UUID
     ): CompletableFuture<ScCougarPlayer>
     {
-        return playerLayer.loadAndCache(uniqueId, {
-            flavor.injected(uniqueId)
-        }, DataStoreStorageType.REDIS)
+        return playerLayer.load(uniqueId, DataStoreStorageType.REDIS)
+            .thenApply {
+                if (it == null)
+                {
+                    val injected = flavor
+                        .injected<ScCougarPlayer>(uniqueId)
+                    playerLayer.localCache()[uniqueId] = injected
+
+                    return@thenApply injected
+                }
+
+                flavor.inject(it)
+                playerLayer.localCache()[uniqueId] = it
+
+                return@thenApply it
+            }
     }
 
     fun removeResources(uniqueId: UUID)
@@ -121,14 +136,21 @@ abstract class ScCougarPlatform
             }, 1L, 1L, TimeUnit.SECONDS)
         }
 
-        flavor.startup()
+        if (configureFlavor())
+        {
+            flavor.startup()
+        }
 
         producer.aware.connect()
+            .toCompletableFuture().join()
     }
 
     fun close()
     {
-        flavor.close()
+        if (configureFlavor())
+        {
+            flavor.close()
+        }
 
         producer.executor
             .shutdownNow()

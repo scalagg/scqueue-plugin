@@ -1,5 +1,9 @@
 package gg.scala.cougar.spigot
 
+import gg.scala.commons.ExtendedScalaPlugin
+import gg.scala.commons.annotations.container.ContainerDisable
+import gg.scala.commons.annotations.container.ContainerEnable
+import gg.scala.commons.proxy.Plugins
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.CubedVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.ProtocolSupportProvider
@@ -23,65 +27,39 @@ import org.bukkit.Bukkit
 @Plugin(
     name = "Cougar",
     depends = [
-        PluginDependency("helper"),
         PluginDependency("store-spigot"),
+        PluginDependency("scala-commons"),
         PluginDependency("Lemon", soft = true),
-        PluginDependency("Cubed", soft = true),
+        PluginDependency("ViaVersion", soft = true),
+        PluginDependency("ProtocolSupport", soft = true),
     ]
 )
-class ScalaCougarSpigotPlugin : ExtendedJavaPlugin()
+class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
 {
+    companion object
+    {
+        @JvmStatic
+        lateinit var instance: ScalaCougarSpigotPlugin
+    }
+
     lateinit var priorityProvider: PlayerPriorityProvider
     lateinit var protocolVersionProvider: ProtocolVersionProvider
-    lateinit var serverDetailsProvider: ServerDetailsProvider
 
-    override fun enable()
+    var serverDetailsProvider: ServerDetailsProvider =
+        DefaultServerDetailsProvider
+
+    @ContainerEnable
+    fun containerEnable()
     {
-        ScalaCougarSpigotEngine.flavor = Flavor
-            .create<ScalaCougarSpigotPlugin>(
-                FlavorOptions(logger)
-            )
-
-        registerProviders()
+        instance = this
 
         ScalaCougarSpigotEngine.preLoad()
 
-        ScalaCougarSpigotEngine.flavor.bind<ScalaCougarSpigotPlugin>() to this
-        ScalaCougarSpigotEngine.flavor.inject(ScalaCougarSpigotEngine)
-
-        ScalaCougarSpigotEngine.configure()
+        flavor().inject(ScalaCougarSpigotEngine)
     }
 
-    private fun registerProviders()
-    {
-        if ("Lemon".pluginExists())
-        {
-            priorityProvider = LemonPlayerPriorityProvider()
-            serverDetailsProvider = LemonServerDetailsProvider()
-        } else
-        {
-            serverDetailsProvider = DefaultServerDetailsProvider
-                .also { it.configure(this) }
-        }
-
-        if ("ProtocolSupport".pluginExists())
-        {
-            protocolVersionProvider = ProtocolSupportProvider()
-        } else if ("ViaVersion".pluginExists())
-        {
-            protocolVersionProvider = ViaVersionProvider()
-        } else if ("Cubed".pluginExists())
-        {
-            protocolVersionProvider = CubedVersionProvider()
-        }
-    }
-
-    private fun String.pluginExists(): Boolean
-    {
-        return Bukkit.getPluginManager().getPlugin(this) != null
-    }
-
-    override fun disable()
+    @ContainerDisable
+    fun containerDisable()
     {
         ScalaCougarSpigotEngine.close()
     }

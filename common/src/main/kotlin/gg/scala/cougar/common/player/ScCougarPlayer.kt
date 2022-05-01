@@ -12,8 +12,6 @@ import java.util.concurrent.CompletableFuture
  * @since 12/24/2021
  */
 class ScCougarPlayer(
-    @JvmField
-    @Transient
     val uniqueId: UUID
 ): IDataStoreObject
 {

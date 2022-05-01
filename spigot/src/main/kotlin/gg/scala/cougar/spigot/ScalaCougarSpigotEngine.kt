@@ -3,6 +3,7 @@ package gg.scala.cougar.spigot
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.flavor.inject.Inject
+import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
@@ -23,6 +24,7 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
 
     private lateinit var instance: ScCougarInstance
 
+    @Configure
     override fun configure()
     {
         super.setupLayers()
@@ -43,6 +45,11 @@ object ScalaCougarSpigotEngine : ScCougarPlatform()
             plugin.serverDetailsProvider
                 .getServerName(), databaseId
         )
+    }
+
+    override fun configureFlavor(): Boolean
+    {
+        return false
     }
 
     override fun updateLocalInstance()

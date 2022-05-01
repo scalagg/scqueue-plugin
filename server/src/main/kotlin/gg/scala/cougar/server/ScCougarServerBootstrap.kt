@@ -2,7 +2,6 @@ package gg.scala.cougar.server
 
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
-import gg.scala.cougar.server.iterator.ScCougarQueueUpdateStreamIterator.queues
 import gg.scala.cougar.server.redis.ScCougarRedisEngine
 import gg.scala.cougar.server.settings.CougarSettingsProcessor
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
@@ -33,7 +32,7 @@ object ScCougarServerBootstrap : ScCougarPlatform()
 
         flavor = Flavor
             .create<ScCougarServerBootstrap>(
-                FlavorOptions(LOGGER)
+                FlavorOptions(LOGGER, "gg.scala.cougar")
             )
         flavor.bind<ScCougarPlatform>() to this
 

@@ -7,9 +7,11 @@ import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.command.impl.LeaveQueueCommand
+import gg.scala.cougar.spigot.command.impl.administration.CougarCommand
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
+import gg.scala.lemon.Lemon
 import net.evilblock.cubed.command.manager.CubedCommandManager
 import org.bukkit.ChatColor
 
@@ -27,7 +29,12 @@ object CommandService
     fun configure()
     {
         val engine = ScalaCougarSpigotEngine
-        val manager = CubedCommandManager(plugin)
+
+        val manager = CubedCommandManager(
+            plugin = plugin,
+            primary = ChatColor.valueOf(Lemon.instance.lemonWebData.primary),
+            secondary = ChatColor.valueOf(Lemon.instance.lemonWebData.secondary)
+        )
 
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
             val poppedArgument = it.popFirstArg()
@@ -51,6 +58,10 @@ object CommandService
             manager.registerCommand(JoinQueueCommand)
         }
 
+        engine.flavor.bind<ScalaCougarSpigotEngine>() to engine
+        engine.flavor.inject(CougarCommand)
+
+        manager.registerCommand(CougarCommand)
         manager.registerCommand(LeaveQueueCommand)
     }
 }

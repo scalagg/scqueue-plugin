@@ -40,7 +40,7 @@ object CougarSettingsProcessor
 
         ScCougarServerBootstrap.flavor.bind<CougarLanguageSettings>().instance = locate<CougarLanguageSettings>()!!
         ScCougarServerBootstrap.flavor.bind<CougarQueueSettings>().instance = locate<CougarQueueSettings>()!!
-        ScCougarServerBootstrap.flavor.bind<CougarIterationSettings>().instance = locate<CougarIterationSettings>()!!
+        ScCougarServerBootstrap.flavor.bind<CougarIterationSettings>() to locate<CougarIterationSettings>()!!
         ScCougarServerBootstrap.flavor.bind<CougarRedisSettings>().instance = locate<CougarRedisSettings>()!!
         ScCougarServerBootstrap.flavor.bind<CougarPrioritySettings>().instance = locate<CougarPrioritySettings>()!!
     }

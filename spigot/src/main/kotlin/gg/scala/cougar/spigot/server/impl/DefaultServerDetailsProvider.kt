@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot.server.impl
 
+import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.cougar.spigot.server.ServerDetailsProvider
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -9,13 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 object DefaultServerDetailsProvider : ServerDetailsProvider
 {
-    private lateinit var id: String
+    private val id by lazy {
+        val plugin =
+            ScalaCougarSpigotPlugin.instance
 
-    fun configure(plugin: JavaPlugin)
-    {
         plugin.saveDefaultConfig()
-        id = plugin.config.getString("id")
+        plugin.config.getString("id")
     }
 
-    override fun getServerName() = id
+    override fun getServerName(): String = id
 }

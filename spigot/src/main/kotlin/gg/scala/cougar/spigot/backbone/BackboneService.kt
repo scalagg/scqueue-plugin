@@ -12,6 +12,7 @@ import gg.scala.flavor.service.Close
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.lemon.redirection.impl.VelocityRedirectSystem
+import net.evilblock.cubed.serializers.Serializers
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import java.lang.reflect.Type
@@ -42,7 +43,10 @@ object BackboneService
     fun configure()
     {
         aware.listen(this)
+
         aware.connect()
+            .toCompletableFuture()
+            .join()
 
         plugin.server.messenger
             .registerOutgoingPluginChannel(
@@ -82,11 +86,15 @@ object BackboneService
         }
     }
 
+    val type = object : TypeToken<MutableMap<UUID, String>>()
+    {}.type
+
     @Subscribe("queue-update-stream")
     fun onQueueUpdates(message: AwareMessage)
     {
-        val messages = message
-            .retrieve<Map<UUID, String>>("messages")
+        val messages = Serializers.gson.fromJson<MutableMap<UUID, String>>(
+            message.retrieve<String>("messages"), type
+        )
 
         for (onlinePlayer in Bukkit.getOnlinePlayers())
         {
