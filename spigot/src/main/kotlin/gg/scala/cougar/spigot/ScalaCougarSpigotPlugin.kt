@@ -75,6 +75,8 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
             serverId.contains("lobby")
         )
         {
+            flavor().inject(JoinQueueCommand)
+
             manager.registerCommand(JoinQueueCommand)
         }
     }
