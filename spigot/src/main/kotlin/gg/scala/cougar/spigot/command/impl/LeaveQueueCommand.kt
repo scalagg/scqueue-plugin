@@ -1,5 +1,7 @@
 package gg.scala.cougar.spigot.command.impl
 
+import gg.scala.commons.annotations.commands.AutoRegister
+import gg.scala.commons.command.ScalaCommand
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import net.evilblock.cubed.acf.BaseCommand
 import net.evilblock.cubed.acf.ConditionFailedException
@@ -13,7 +15,8 @@ import org.bukkit.entity.Player
  * @author GrowlyX
  * @since 1/12/2022
  */
-object LeaveQueueCommand : BaseCommand()
+@AutoRegister
+object LeaveQueueCommand : ScalaCommand()
 {
     @CommandAlias("leaveq|leavequeue")
     @CommandPermission("cougar.command.leavequeue")

@@ -28,16 +28,19 @@ object ListenerService
 
         Events.subscribe(PlayerJoinEvent::class.java)
             .handler {
-                engine.loadPlayerResources(it.player.uniqueId).thenAccept { player ->
-                    player.priority = plugin.priorityProvider.getPriority(it.player)
+                engine.loadPlayerResources(it.player.uniqueId)
+                    .thenAccept { player ->
+                        player.priority = plugin
+                            .priorityProvider
+                            .getPriority(it.player)
 
-                    player.save().thenRun {
-                        ScCougarServerMessageProducer.produce(
-                            "player-connect",
-                            "uniqueId" to it.player.uniqueId
-                        ).publish()
+                        player.save().thenRun {
+                            ScCougarServerMessageProducer.produce(
+                                "player-connect",
+                                "uniqueId" to it.player.uniqueId
+                            ).publish()
+                        }
                     }
-                }
             }
             .bindWith(plugin)
 

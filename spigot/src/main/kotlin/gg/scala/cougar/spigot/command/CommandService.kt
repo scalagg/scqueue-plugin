@@ -1,5 +1,6 @@
 package gg.scala.cougar.spigot.command
 
+import gg.scala.commons.annotations.commands.customizer.CommandManagerCustomizer
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.acf.PaperCommandManager
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
@@ -19,22 +20,14 @@ import org.bukkit.ChatColor
  * @author GrowlyX
  * @since 1/12/2022
  */
-@Service
 object CommandService
 {
-    @Inject
-    lateinit var plugin: ScalaCougarSpigotPlugin
-
-    @Configure
-    fun configure()
+    @CommandManagerCustomizer
+    fun customize(
+        manager: CubedCommandManager
+    )
     {
         val engine = ScalaCougarSpigotEngine
-
-        val manager = CubedCommandManager(
-            plugin = plugin,
-            primary = ChatColor.valueOf(Lemon.instance.lemonWebData.primary),
-            secondary = ChatColor.valueOf(Lemon.instance.lemonWebData.secondary)
-        )
 
         manager.commandContexts.registerContext(CougarQueueWrapper::class.java) {
             val poppedArgument = it.popFirstArg()
@@ -43,11 +36,12 @@ object CommandService
                 .values.firstOrNull { wrapper ->
                     wrapper.serverId.equals(poppedArgument, true)
                 } ?: throw ConditionFailedException(
-                    "There is no queue named ${ChatColor.YELLOW}$poppedArgument${ChatColor.RED}."
-                )
+                "There is no queue named ${ChatColor.YELLOW}$poppedArgument${ChatColor.RED}."
+            )
         }
 
-        val serverId = plugin.serverDetailsProvider
+        val serverId = ScalaCougarSpigotPlugin
+            .instance.serverDetailsProvider
             .getServerName().lowercase()
 
         if (
@@ -57,11 +51,5 @@ object CommandService
         {
             manager.registerCommand(JoinQueueCommand)
         }
-
-        engine.flavor.bind<ScalaCougarSpigotEngine>() to engine
-        engine.flavor.inject(CougarCommand)
-
-        manager.registerCommand(CougarCommand)
-        manager.registerCommand(LeaveQueueCommand)
     }
 }

@@ -1,5 +1,7 @@
 package gg.scala.cougar.spigot.command.impl.administration
 
+import gg.scala.commons.annotations.commands.AutoRegister
+import gg.scala.commons.command.ScalaCommand
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Service
@@ -18,9 +20,10 @@ import org.bukkit.command.CommandSender
  * @author GrowlyX
  * @since 4/8/2022
  */
+@AutoRegister
 @CommandAlias("cougar|cgr")
 @CommandPermission("cougar.command.cougar")
-object CougarCommand : BaseCommand()
+object CougarCommand : ScalaCommand()
 {
     @Inject
     lateinit var engine: ScalaCougarSpigotEngine

@@ -46,7 +46,7 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     lateinit var protocolVersionProvider: ProtocolVersionProvider
 
     var serverDetailsProvider: ServerDetailsProvider =
-        DefaultServerDetailsProvider
+        LemonServerDetailsProvider
 
     @ContainerEnable
     fun containerEnable()
