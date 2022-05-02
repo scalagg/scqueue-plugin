@@ -33,6 +33,7 @@ import org.bukkit.Bukkit
         PluginDependency("store-spigot"),
         PluginDependency("scala-commons"),
         PluginDependency("Lemon", soft = true),
+        PluginDependency("cloudsync", soft = true),
         PluginDependency("ViaVersion", soft = true),
         PluginDependency("ProtocolSupport", soft = true),
     ]
