@@ -3,11 +3,10 @@ package gg.scala.cougar.spigot.command.impl
 import gg.scala.commons.annotations.commands.AutoRegister
 import gg.scala.commons.command.ScalaCommand
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import net.evilblock.cubed.acf.BaseCommand
+import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import net.evilblock.cubed.acf.ConditionFailedException
 import net.evilblock.cubed.acf.annotation.CommandAlias
 import net.evilblock.cubed.acf.annotation.CommandPermission
-import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 

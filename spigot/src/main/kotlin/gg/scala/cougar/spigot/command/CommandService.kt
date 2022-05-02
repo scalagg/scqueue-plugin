@@ -39,17 +39,5 @@ object CommandService
                 "There is no queue named ${ChatColor.YELLOW}$poppedArgument${ChatColor.RED}."
             )
         }
-
-        val serverId = ScalaCougarSpigotPlugin
-            .instance.serverDetailsProvider
-            .getServerName().lowercase()
-
-        if (
-            serverId.contains("hub") ||
-            serverId.contains("lobby")
-        )
-        {
-            manager.registerCommand(JoinQueueCommand)
-        }
     }
 }

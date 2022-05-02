@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit
  * @author GrowlyX
  * @since 1/12/2022
  */
-@AutoRegister
 object JoinQueueCommand : ScalaCommand()
 {
     @Inject

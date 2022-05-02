@@ -1,9 +1,11 @@
 package gg.scala.cougar.spigot
 
 import gg.scala.commons.ExtendedScalaPlugin
+import gg.scala.commons.annotations.commands.ManualRegister
 import gg.scala.commons.annotations.container.ContainerDisable
 import gg.scala.commons.annotations.container.ContainerEnable
 import gg.scala.commons.proxy.Plugins
+import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.CubedVersionProvider
 import gg.scala.cougar.spigot.protocol.impl.ProtocolSupportProvider
@@ -18,6 +20,7 @@ import gg.scala.flavor.FlavorOptions
 import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
+import net.evilblock.cubed.command.manager.CubedCommandManager
 import org.bukkit.Bukkit
 
 /**
@@ -56,6 +59,23 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
         ScalaCougarSpigotEngine.preLoad()
 
         flavor().inject(ScalaCougarSpigotEngine)
+    }
+
+    @ManualRegister
+    fun manualRegister(
+        manager: CubedCommandManager
+    )
+    {
+        val serverId = serverDetailsProvider
+            .getServerName().lowercase()
+
+        if (
+            serverId.contains("hub") ||
+            serverId.contains("lobby")
+        )
+        {
+            manager.registerCommand(JoinQueueCommand)
+        }
     }
 
     @ContainerDisable
