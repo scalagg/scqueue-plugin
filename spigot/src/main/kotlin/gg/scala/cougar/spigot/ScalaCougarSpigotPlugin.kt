@@ -4,24 +4,14 @@ import gg.scala.commons.ExtendedScalaPlugin
 import gg.scala.commons.annotations.commands.ManualRegister
 import gg.scala.commons.annotations.container.ContainerDisable
 import gg.scala.commons.annotations.container.ContainerEnable
-import gg.scala.commons.proxy.Plugins
+import gg.scala.commons.command.ScalaCommandManager
 import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
-import gg.scala.cougar.spigot.protocol.impl.CubedVersionProvider
-import gg.scala.cougar.spigot.protocol.impl.ProtocolSupportProvider
-import gg.scala.cougar.spigot.protocol.impl.ViaVersionProvider
 import gg.scala.cougar.spigot.provider.PlayerPriorityProvider
-import gg.scala.cougar.spigot.provider.impl.LemonPlayerPriorityProvider
 import gg.scala.cougar.spigot.server.ServerDetailsProvider
-import gg.scala.cougar.spigot.server.impl.DefaultServerDetailsProvider
 import gg.scala.cougar.spigot.server.impl.LemonServerDetailsProvider
-import gg.scala.flavor.Flavor
-import gg.scala.flavor.FlavorOptions
-import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
-import net.evilblock.cubed.command.manager.CubedCommandManager
-import org.bukkit.Bukkit
 
 /**
  * @author GrowlyX
@@ -64,7 +54,7 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
 
     @ManualRegister
     fun manualRegister(
-        manager: CubedCommandManager
+        manager: ScalaCommandManager
     )
     {
         val serverId = serverDetailsProvider

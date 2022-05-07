@@ -5,14 +5,14 @@ import gg.scala.commons.command.ScalaCommand
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Service
-import net.evilblock.cubed.acf.BaseCommand
-import net.evilblock.cubed.acf.CommandHelp
-import net.evilblock.cubed.acf.annotation.CommandAlias
-import net.evilblock.cubed.acf.annotation.CommandPermission
-import net.evilblock.cubed.acf.annotation.Default
-import net.evilblock.cubed.acf.annotation.Description
-import net.evilblock.cubed.acf.annotation.HelpCommand
-import net.evilblock.cubed.acf.annotation.Subcommand
+import gg.scala.commons.acf.BaseCommand
+import gg.scala.commons.acf.CommandHelp
+import gg.scala.commons.acf.annotation.CommandAlias
+import gg.scala.commons.acf.annotation.CommandPermission
+import gg.scala.commons.acf.annotation.Default
+import gg.scala.commons.acf.annotation.Description
+import gg.scala.commons.acf.annotation.HelpCommand
+import gg.scala.commons.acf.annotation.Subcommand
 import net.evilblock.cubed.util.CC
 import org.bukkit.command.CommandSender
 

@@ -1,19 +1,10 @@
 package gg.scala.cougar.spigot.command
 
+import gg.scala.commons.acf.ConditionFailedException
 import gg.scala.commons.annotations.commands.customizer.CommandManagerCustomizer
-import net.evilblock.cubed.acf.ConditionFailedException
-import net.evilblock.cubed.acf.PaperCommandManager
+import gg.scala.commons.command.ScalaCommandManager
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
-import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
-import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
-import gg.scala.cougar.spigot.command.impl.LeaveQueueCommand
-import gg.scala.cougar.spigot.command.impl.administration.CougarCommand
-import gg.scala.flavor.inject.Inject
-import gg.scala.flavor.service.Configure
-import gg.scala.flavor.service.Service
-import gg.scala.lemon.Lemon
-import net.evilblock.cubed.command.manager.CubedCommandManager
 import org.bukkit.ChatColor
 
 /**
@@ -24,7 +15,7 @@ object CommandService
 {
     @CommandManagerCustomizer
     fun customize(
-        manager: CubedCommandManager
+        manager: ScalaCommandManager
     )
     {
         val engine = ScalaCougarSpigotEngine
