@@ -1,24 +1,17 @@
 package gg.scala.cougar.spigot
 
 import gg.scala.commons.ExtendedScalaPlugin
+import gg.scala.commons.annotations.commands.ManualRegister
 import gg.scala.commons.annotations.container.ContainerDisable
 import gg.scala.commons.annotations.container.ContainerEnable
-import gg.scala.commons.proxy.Plugins
+import gg.scala.commons.command.ScalaCommandManager
+import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
-import gg.scala.cougar.spigot.protocol.impl.CubedVersionProvider
-import gg.scala.cougar.spigot.protocol.impl.ProtocolSupportProvider
-import gg.scala.cougar.spigot.protocol.impl.ViaVersionProvider
 import gg.scala.cougar.spigot.provider.PlayerPriorityProvider
-import gg.scala.cougar.spigot.provider.impl.LemonPlayerPriorityProvider
 import gg.scala.cougar.spigot.server.ServerDetailsProvider
-import gg.scala.cougar.spigot.server.impl.DefaultServerDetailsProvider
 import gg.scala.cougar.spigot.server.impl.LemonServerDetailsProvider
-import gg.scala.flavor.Flavor
-import gg.scala.flavor.FlavorOptions
-import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
-import org.bukkit.Bukkit
 
 /**
  * @author GrowlyX
@@ -30,6 +23,7 @@ import org.bukkit.Bukkit
         PluginDependency("store-spigot"),
         PluginDependency("scala-commons"),
         PluginDependency("Lemon", soft = true),
+        PluginDependency("cloudsync", soft = true),
         PluginDependency("ViaVersion", soft = true),
         PluginDependency("ProtocolSupport", soft = true),
     ]
@@ -46,7 +40,7 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     lateinit var protocolVersionProvider: ProtocolVersionProvider
 
     var serverDetailsProvider: ServerDetailsProvider =
-        DefaultServerDetailsProvider
+        LemonServerDetailsProvider
 
     @ContainerEnable
     fun containerEnable()
@@ -56,6 +50,25 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
         ScalaCougarSpigotEngine.preLoad()
 
         flavor().inject(ScalaCougarSpigotEngine)
+    }
+
+    @ManualRegister
+    fun manualRegister(
+        manager: ScalaCommandManager
+    )
+    {
+        val serverId = serverDetailsProvider
+            .getServerName().lowercase()
+
+        if (
+            serverId.contains("hub") ||
+            serverId.contains("lobby")
+        )
+        {
+            flavor().inject(JoinQueueCommand)
+
+            manager.registerCommand(JoinQueueCommand)
+        }
     }
 
     @ContainerDisable

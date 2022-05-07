@@ -17,7 +17,6 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 @Service
 @IgnoreAutoScan
-@SoftDependency("Lemon")
 object LemonServerDetailsProvider : ServerDetailsProvider
 {
     @Configure

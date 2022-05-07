@@ -1,11 +1,12 @@
 package gg.scala.cougar.spigot.command.impl
 
+import gg.scala.commons.annotations.commands.AutoRegister
+import gg.scala.commons.command.ScalaCommand
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import net.evilblock.cubed.acf.BaseCommand
-import net.evilblock.cubed.acf.ConditionFailedException
-import net.evilblock.cubed.acf.annotation.CommandAlias
-import net.evilblock.cubed.acf.annotation.CommandPermission
 import gg.scala.cougar.spigot.ScalaCougarSpigotEngine
+import gg.scala.commons.acf.ConditionFailedException
+import gg.scala.commons.acf.annotation.CommandAlias
+import gg.scala.commons.acf.annotation.CommandPermission
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -13,7 +14,8 @@ import org.bukkit.entity.Player
  * @author GrowlyX
  * @since 1/12/2022
  */
-object LeaveQueueCommand : BaseCommand()
+@AutoRegister
+object LeaveQueueCommand : ScalaCommand()
 {
     @CommandAlias("leaveq|leavequeue")
     @CommandPermission("cougar.command.leavequeue")

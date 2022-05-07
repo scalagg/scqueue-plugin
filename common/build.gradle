@@ -1,4 +1,4 @@
 dependencies {
-    compileOnly 'net.evilblock.cubed:velocity:1.3.7'
+    compileOnly "gg.scala.commons:velocity:2.0.0"
     compileOnly 'gg.scala.aware:aware:1.0.8.2'
 }
