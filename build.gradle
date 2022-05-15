@@ -40,18 +40,17 @@ allprojects {
 }
 
 artifactory {
-    this.contextUrl = "${artifactory_contextUrl}"
+    this.contextUrl = environmental("artifactory_contextUrl")
 
     publish {
         repository {
-            repoKey = "${artifactory_release_local}"
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
+            repoKey = environmental("artifactory_release_local")
+            username = environmental("artifactory_user")
+            password = environmental("artifactory_password")
             maven = true
         }
     }
 }
-
 subprojects {
     apply plugin: "maven-publish"
     apply plugin: "com.jfrog.artifactory"
