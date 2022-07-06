@@ -3,10 +3,9 @@ package gg.scala.cougar.velocity
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
-import gg.scala.aware.AwareHub
-import gg.scala.aware.uri.WrappedAwareUri
-import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
-import net.evilblock.cubed.serializers.Serializers
+import gg.scala.aware.AwareBuilder
+import gg.scala.aware.codec.codecs.interpretation.AwareMessageCodec
+import gg.scala.aware.message.AwareMessage
 
 /**
  * @author GrowlyX
@@ -14,14 +13,10 @@ import net.evilblock.cubed.serializers.Serializers
  */
 object ScalaCougarVelocityListener
 {
-    init
-    {
-        AwareHub.configure(
-            WrappedAwareUri()
-        ) {
-            Serializers.gson
-        }
-    }
+    private val aware = AwareBuilder
+        .of<AwareMessage>("cougar:backbone")
+        .codec(AwareMessageCodec)
+        .build()
 
     @Subscribe
     fun onLogout(event: LoginEvent)
@@ -52,5 +47,24 @@ object ScalaCougarVelocityListener
         ).apply {
             publish(channel = "friends")
         }
+    }
+
+    @JvmStatic
+    fun produce(
+        packet: String,
+        vararg arguments: Pair<String, Any>
+    ): AwareMessage
+    {
+        val message = AwareMessage
+            .of(packet, this.aware)
+
+        for (argument in arguments)
+        {
+            message.assign(
+                argument.first, argument.second
+            )
+        }
+
+        return message
     }
 }
