@@ -1,22 +1,9 @@
 plugins {
     id "maven-publish"
     id "com.jfrog.artifactory" version "4.28.2"
-    id "org.jetbrains.kotlin.jvm" version "1.7.0"
-    id "org.jetbrains.kotlin.kapt" version "1.7.0"
+    id "org.jetbrains.kotlin.jvm" version "1.7.10"
+    id "org.jetbrains.kotlin.kapt" version "1.7.10"
     id "com.github.johnrengelman.shadow" version "7.1.2"
-}
-
-String environmental(String key)
-{
-    final String environment =
-        System.getenv(key)
-
-    if (environment != null)
-    {
-        return environment
-    }
-
-    return project.property(key)
 }
 
 allprojects {
@@ -27,11 +14,11 @@ allprojects {
         mavenCentral()
         maven {
             name "scala"
-            url "${environmental("artifactory_contextUrl")}/gradle-release"
+            url "${property("artifactory_contextUrl")}/gradle-release"
 
             credentials {
-                username environmental("artifactory_user")
-                password environmental("artifactory_password")
+                username property("artifactory_user")
+                password property("artifactory_password")
             }
         }
 
@@ -40,13 +27,13 @@ allprojects {
 }
 
 artifactory {
-    this.contextUrl = environmental("artifactory_contextUrl")
+    this.contextUrl = property("artifactory_contextUrl")
 
     publish {
         repository {
-            repoKey = environmental("artifactory_release_local")
-            username = environmental("artifactory_user")
-            password = environmental("artifactory_password")
+            repoKey = property("artifactory_release_local")
+            username = property("artifactory_user")
+            password = property("artifactory_password")
             maven = true
         }
     }
@@ -62,10 +49,10 @@ subprojects {
     dependencies {
         if (project.name != "velocity")
         {
-            compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.0"
+            compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
         }
 
-        compileOnly "gg.scala.flavor:flavor:0.1.3.7"
+        compileOnly "gg.scala.flavor:flavor:0.1.6"
         compileOnly "gg.scala.store:shared:0.1.3"
 
         compileOnly "com.google.guava:guava:31.1-jre"
@@ -73,7 +60,7 @@ subprojects {
 
     compileKotlin {
         kotlinOptions.javaParameters = true
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "17"
     }
 
     shadowJar {
@@ -96,11 +83,11 @@ subprojects {
         repositories {
             maven {
                 name "scala"
-                url "${environmental("artifactory_contextUrl")}/gradle-release"
+                url "${property("artifactory_contextUrl")}/gradle-release"
 
                 credentials {
-                    username environmental("artifactory_user")
-                    password environmental("artifactory_password")
+                    username property("artifactory_user")
+                    password property("artifactory_password")
                 }
             }
         }
