@@ -25,9 +25,6 @@ import org.bukkit.command.CommandSender
 @CommandPermission("cougar.command.cougar")
 object CougarCommand : ScalaCommand()
 {
-    @Inject
-    lateinit var engine: ScalaCougarSpigotEngine
-
     @Default
     @HelpCommand
     fun onHelp(
@@ -43,7 +40,7 @@ object CougarCommand : ScalaCommand()
         sender: CommandSender
     )
     {
-        val queues = engine
+        val queues = ScalaCougarSpigotEngine
             .queueLayer.localCache()
 
         sender.sendMessage("")

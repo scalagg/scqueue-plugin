@@ -46,7 +46,6 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     fun containerEnable()
     {
         instance = this
-
         ScalaCougarSpigotEngine.preLoad()
 
         flavor().inject(ScalaCougarSpigotEngine)

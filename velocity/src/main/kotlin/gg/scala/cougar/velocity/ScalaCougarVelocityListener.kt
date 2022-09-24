@@ -68,3 +68,19 @@ object ScalaCougarVelocityListener
         return message
     }
 }
+
+inline fun <reified T> contextual(
+    noinline lambda: () -> Unit
+)
+{
+    val classLoader = Thread.currentThread().contextClassLoader
+    Thread.currentThread().contextClassLoader = T::class.java.classLoader
+
+    runCatching(lambda)
+        .onFailure {
+            it.printStackTrace()
+        }
+        .getOrNull()
+
+    Thread.currentThread().contextClassLoader = classLoader
+}
