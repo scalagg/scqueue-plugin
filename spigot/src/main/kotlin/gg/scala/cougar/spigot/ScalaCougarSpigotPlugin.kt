@@ -9,7 +9,7 @@ import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.provider.PlayerPriorityProvider
 import gg.scala.cougar.spigot.server.ServerDetailsProvider
-import gg.scala.cougar.spigot.server.impl.LemonServerDetailsProvider
+import gg.scala.cougar.spigot.server.impl.DefaultServerDetailsProvider
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
 
@@ -25,7 +25,7 @@ import me.lucko.helper.plugin.ap.PluginDependency
         PluginDependency("Lemon", soft = true),
         PluginDependency("cloudsync", soft = true),
         PluginDependency("ViaVersion", soft = true),
-        PluginDependency("ProtocolSupport", soft = true),
+        PluginDependency("ProtocolSupport", soft = true)
     ]
 )
 class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
@@ -40,7 +40,7 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     lateinit var protocolVersionProvider: ProtocolVersionProvider
 
     var serverDetailsProvider: ServerDetailsProvider =
-        LemonServerDetailsProvider
+        DefaultServerDetailsProvider
 
     @ContainerEnable
     fun containerEnable()

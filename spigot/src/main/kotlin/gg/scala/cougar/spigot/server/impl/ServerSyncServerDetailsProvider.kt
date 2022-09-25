@@ -1,14 +1,13 @@
 package gg.scala.cougar.spigot.server.impl
 
+import gg.scala.commons.agnostic.sync.ServerSync
 import gg.scala.commons.annotations.plugin.SoftDependency
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
-import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.server.ServerDetailsProvider
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
-import gg.scala.lemon.Lemon
-import gg.scala.lemon.LemonConstants
+import net.kyori.adventure.key.Key
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -16,8 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin
  * @since 1/15/2022
  */
 @Service
+@SoftDependency("scala-commons")
 @IgnoreAutoScan
-object LemonServerDetailsProvider : ServerDetailsProvider
+object ServerSyncServerDetailsProvider : ServerDetailsProvider
 {
     @Configure
     fun configure()
@@ -26,12 +26,14 @@ object LemonServerDetailsProvider : ServerDetailsProvider
             .instance.serverDetailsProvider = this
     }
 
-    override fun getServerName() = Lemon.instance.settings.id
+    override fun getServerName() = ServerSync.getLocalGameServer().id
 
     override fun updateMetaData(plugin: JavaPlugin)
     {
-        Lemon.instance.localInstance
-            .metaData["joinable"] = getServerName()
-                .lowercase().contains("hub").toString()
+        ServerSync.getLocalGameServer()
+            .setMetadata(
+                Key.key("queue", "joinable"),
+                getServerName().lowercase().contains("hub")
+            )
     }
 }
