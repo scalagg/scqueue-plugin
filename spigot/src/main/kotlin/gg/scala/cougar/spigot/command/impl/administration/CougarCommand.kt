@@ -21,8 +21,8 @@ import org.bukkit.command.CommandSender
  * @since 4/8/2022
  */
 @AutoRegister
-@CommandAlias("cougar|cgr")
-@CommandPermission("cougar.command.cougar")
+@CommandAlias("scq|scqueue")
+@CommandPermission("scqueue.command.scqueue")
 object CougarCommand : ScalaCommand()
 {
     @Default

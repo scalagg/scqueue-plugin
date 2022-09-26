@@ -1,7 +1,6 @@
 package gg.scala.cougar.common
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
-import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.common.player.ScCougarPlayer
 import gg.scala.cougar.common.queue.impl.wrapper.CougarQueueWrapper
@@ -11,7 +10,10 @@ import gg.scala.store.controller.DataStoreObjectController
 import gg.scala.store.controller.DataStoreObjectControllerCache
 import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import java.util.logging.Logger
 import kotlin.properties.Delegates
 
@@ -28,7 +30,6 @@ abstract class ScCougarPlatform
     }
 
     var playerLayer by Delegates.notNull<DataStoreObjectController<ScCougarPlayer>>()
-    var instanceLayer by Delegates.notNull<DataStoreObjectController<ScCougarInstance>>()
     var queueLayer by Delegates.notNull<DataStoreObjectController<CougarQueueWrapper>>()
 
     val executor: ScheduledExecutorService = Executors
@@ -43,10 +44,6 @@ abstract class ScCougarPlatform
     )
 
     val queueDatabaseIds = mutableMapOf<String, UUID>()
-
-    abstract fun updateLocalInstance()
-    abstract fun getLocalInstance(): ScCougarInstance
-    abstract fun shouldTrackInstance(): Boolean
 
     open fun configureFlavor() = true
 
@@ -81,7 +78,6 @@ abstract class ScCougarPlatform
     fun setupLayers()
     {
         playerLayer = DataStoreObjectControllerCache.create()
-        instanceLayer = DataStoreObjectControllerCache.create()
         queueLayer = DataStoreObjectControllerCache.create()
     }
 
@@ -97,7 +93,6 @@ abstract class ScCougarPlatform
         flavor.bind<ScCougarPlatform>() to this
 
         flavor.bind<DataStoreObjectController<ScCougarPlayer>>() to playerLayer
-        flavor.bind<DataStoreObjectController<ScCougarInstance>>() to instanceLayer
 
         producer = ScCougarServerMessageProducer
         producer.aware.listen("queue-update") {
@@ -122,20 +117,6 @@ abstract class ScCougarPlatform
             }
         }, 1L, 1L, TimeUnit.SECONDS)
 
-        if (shouldTrackInstance())
-        {
-            producer.executor.scheduleAtFixedRate({
-                updateLocalInstance()
-
-                instanceLayer.save(
-                    getLocalInstance(), DataStoreStorageType.REDIS
-                ).thenRun {
-                    getLocalInstance().lastHeartbeat =
-                        System.currentTimeMillis()
-                }
-            }, 1L, 1L, TimeUnit.SECONDS)
-        }
-
         if (configureFlavor())
         {
             flavor.startup()
@@ -152,18 +133,7 @@ abstract class ScCougarPlatform
             flavor.close()
         }
 
-        producer.executor
-            .shutdownNow()
-
-        producer.aware
-            .shutdown()
-
-        if (shouldTrackInstance())
-        {
-            instanceLayer.delete(
-                getLocalInstance().identifier,
-                DataStoreStorageType.REDIS
-            ).join()
-        }
+        producer.executor.shutdownNow()
+        producer.aware.shutdown()
     }
 }

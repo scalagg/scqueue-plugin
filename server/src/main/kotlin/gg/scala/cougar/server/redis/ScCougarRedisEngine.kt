@@ -2,6 +2,7 @@ package gg.scala.cougar.server.redis
 
 import gg.scala.aware.AwareHub
 import gg.scala.aware.uri.WrappedAwareUri
+import gg.scala.commons.agnostic.sync.ServerSync
 import gg.scala.cougar.server.settings.impl.CougarRedisSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
@@ -32,5 +33,7 @@ object ScCougarRedisEngine
         ) {
             Serializers.gson
         }
+
+        ServerSync.configureIndependent()
     }
 }

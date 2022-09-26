@@ -32,7 +32,7 @@ object JoinQueueCommand : ScalaCommand()
         .build<UUID, Long>()
 
     @CommandAlias("joinq|joinqueue|queue")
-    @CommandPermission("cougar.command.joinqueue")
+    @CommandPermission("scqueue.command.joinqueue")
     fun onJoinQueue(player: Player, server: CougarQueueWrapper)
     {
         val engine = ScalaCougarSpigotEngine

@@ -1,6 +1,7 @@
 package gg.scala.cougar.spigot
 
 import gg.scala.commons.ExtendedScalaPlugin
+import gg.scala.commons.agnostic.sync.ServerSync
 import gg.scala.commons.annotations.commands.ManualRegister
 import gg.scala.commons.annotations.container.ContainerDisable
 import gg.scala.commons.annotations.container.ContainerEnable
@@ -8,19 +9,17 @@ import gg.scala.commons.command.ScalaCommandManager
 import gg.scala.cougar.spigot.command.impl.JoinQueueCommand
 import gg.scala.cougar.spigot.protocol.ProtocolVersionProvider
 import gg.scala.cougar.spigot.provider.PlayerPriorityProvider
-import gg.scala.cougar.spigot.server.ServerDetailsProvider
-import gg.scala.cougar.spigot.server.impl.DefaultServerDetailsProvider
 import me.lucko.helper.plugin.ap.Plugin
 import me.lucko.helper.plugin.ap.PluginDependency
+import net.kyori.adventure.key.Key
 
 /**
  * @author GrowlyX
  * @since 1/12/2022
  */
 @Plugin(
-    name = "Cougar",
+    name = "ScQueue",
     depends = [
-        PluginDependency("store-spigot"),
         PluginDependency("scala-commons"),
         PluginDependency("Lemon", soft = true),
         PluginDependency("cloudsync", soft = true),
@@ -39,14 +38,18 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
     lateinit var priorityProvider: PlayerPriorityProvider
     lateinit var protocolVersionProvider: ProtocolVersionProvider
 
-    var serverDetailsProvider: ServerDetailsProvider =
-        DefaultServerDetailsProvider
-
     @ContainerEnable
     fun containerEnable()
     {
         instance = this
         ScalaCougarSpigotEngine.preLoad()
+
+        ServerSync.getLocalGameServer()
+            .setMetadata(
+                Key.key("queue", "joinable"),
+                ServerSync.getLocalGameServer()
+                    .id.lowercase().contains("hub")
+            )
 
         flavor().inject(ScalaCougarSpigotEngine)
     }
@@ -56,12 +59,11 @@ class ScalaCougarSpigotPlugin : ExtendedScalaPlugin()
         manager: ScalaCommandManager
     )
     {
-        val serverId = serverDetailsProvider
-            .getServerName().lowercase()
+        val groups = ServerSync.getLocalGameServer().groups
 
         if (
-            serverId.contains("hub") ||
-            serverId.contains("lobby")
+            groups.contains("hub") ||
+            groups.contains("lobby")
         )
         {
             flavor().inject(JoinQueueCommand)

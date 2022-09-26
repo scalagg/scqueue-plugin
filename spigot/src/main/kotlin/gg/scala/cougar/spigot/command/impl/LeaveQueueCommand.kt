@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 object LeaveQueueCommand : ScalaCommand()
 {
     @CommandAlias("leaveq|leavequeue")
-    @CommandPermission("cougar.command.leavequeue")
+    @CommandPermission("scqueue.command.leavequeue")
     fun onJoinQueue(player: Player)
     {
         val engine = ScalaCougarSpigotEngine

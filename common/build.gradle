@@ -1,4 +1,6 @@
 dependencies {
-    compileOnly "gg.scala.commons:velocity:2.0.0"
+    compileOnly "gg.scala.commons:velocity:2.1.8"
     compileOnly "gg.scala.aware:aware:1.0.8.3"
+
+    compileOnly "gg.scala.commons:serversync:2.1.7"
 }

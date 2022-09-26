@@ -1,18 +1,15 @@
 package gg.scala.cougar.server.iterator
 
 import gg.scala.aware.thread.AwareThreadContext
-import gg.scala.cougar.common.instance.ScCougarInstance
+import gg.scala.commons.agnostic.sync.server.ServerContainer
+import gg.scala.commons.agnostic.sync.server.impl.GameServer
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import gg.scala.cougar.server.ScCougarServerBootstrap
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
-import gg.scala.store.storage.type.DataStoreStorageType
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -32,10 +29,11 @@ object ScCougarQueueIterator : Runnable
     @Configure
     fun configure()
     {
-        val executor = Executors.newSingleThreadScheduledExecutor()
+        val executor = Executors
+            .newSingleThreadScheduledExecutor()
 
         executor.scheduleAtFixedRate(
-            this, 500L,
+            this, 0L,
             iteration.iterationDelay,
             TimeUnit.MILLISECONDS
         )
@@ -55,29 +53,26 @@ object ScCougarQueueIterator : Runnable
         for (queue in settings.queues)
         {
             if (queue.getHandle().isEmpty())
+            {
                 continue
+            }
 
-            val instance = ScCougarServerBootstrap.instanceLayer
-                .useLayerWithReturn<RedisDataStoreStorageLayer<ScCougarInstance>, CompletableFuture<ScCougarInstance?>>(
-                    DataStoreStorageType.REDIS
-                ) {
-                    this.loadWithFilter { it.serverId.equals(queue.targetServerId, true) }
-                }
-                .join()
+            val instance = queue.getGameServer()
+                ?: continue
 
             if (
-                instance == null ||
-                instance.isNotUpToDate ||
-                instance.isMaxCapacity
+                instance.getMaxPlayers() == instance.getPlayersCount()
             )
+            {
                 continue
+            }
 
             val priorityQueue = PriorityQueue(queue.getHandle())
 
-            if (instance.whitelisted)
+            if (instance.getWhitelisted() == true)
             {
                 priorityQueue.removeIf {
-                    !instance.whitelistedPlayers.contains(it)
+                    !instance.getWhitelistedPlayers()?.contains(it)!!
                 }
             }
 

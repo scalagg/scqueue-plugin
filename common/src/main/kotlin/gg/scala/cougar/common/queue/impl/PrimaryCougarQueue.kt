@@ -1,6 +1,8 @@
 package gg.scala.cougar.common.queue.impl
 
 import gg.scala.aware.thread.AwareThreadContext
+import gg.scala.commons.agnostic.sync.server.ServerContainer
+import gg.scala.commons.agnostic.sync.server.impl.GameServer
 import gg.scala.cougar.common.ScCougarPlatform
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer.produce
 
@@ -18,11 +20,25 @@ class PrimaryCougarQueue(
     val targetServerId: String,
     val fancyDisplayName: String,
     private val allowedProtocols: List<Int> =
-        mutableListOf(47)
+        mutableListOf(47),
+    val aggregated: Boolean = false,
+    val aggregatedGroup: String = "duels"
 ) : Queue<UUID>(
     PrimaryCougarQueueComparator
 )
 {
+    fun getGameServer() = if (aggregated)
+    {
+        ServerContainer
+            .getServersInGroup(aggregatedGroup)
+            .filterIsInstance<GameServer>()
+            .sortedBy { it.getPlayersCount() }
+            .firstOrNull()
+    } else
+    {
+        ServerContainer.getServer<GameServer>(targetServerId)
+    }
+
     fun pushDataUpdates(): CompletableFuture<Void>
     {
         val wrapped = CougarQueueWrapper(
