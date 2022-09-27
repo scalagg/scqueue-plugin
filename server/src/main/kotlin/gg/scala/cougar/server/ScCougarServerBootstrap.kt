@@ -102,11 +102,4 @@ object ScCougarServerBootstrap : ScCougarPlatform()
                 }
             )
     }
-
-    override fun updateLocalInstance() = Unit
-
-    override fun getLocalInstance() =
-        throw RuntimeException("Server does not support local instances")
-
-    override fun shouldTrackInstance() = false
 }

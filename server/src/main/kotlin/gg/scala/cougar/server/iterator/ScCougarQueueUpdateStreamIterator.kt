@@ -1,19 +1,14 @@
 package gg.scala.cougar.server.iterator
 
-import gg.scala.cougar.common.instance.ScCougarInstance
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
-import gg.scala.cougar.server.ScCougarServerBootstrap
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
 import gg.scala.flavor.inject.Inject
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
-import gg.scala.store.storage.impl.RedisDataStoreStorageLayer
-import gg.scala.store.storage.type.DataStoreStorageType
 import net.evilblock.cubed.serializers.Serializers
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -49,17 +44,11 @@ object ScCougarQueueUpdateStreamIterator : Runnable
     {
         for (queue in queues.queues)
         {
-            val instance = ScCougarServerBootstrap.instanceLayer
-                .useLayerWithReturn<RedisDataStoreStorageLayer<ScCougarInstance>, CompletableFuture<ScCougarInstance?>>(
-                    DataStoreStorageType.REDIS
-                ) {
-                    this.loadWithFilter { it.serverId.equals(queue.targetServerId, true) }
-                }.join()
-
+            val instance = queue.getGameServer()
             val messageMap = mutableMapOf<UUID, String>()
 
-            val offline = instance == null || instance.isNotUpToDate
-            val whitelisted = instance != null && instance.whitelisted
+            val offline = instance == null
+            val whitelisted = instance != null && instance.getWhitelisted() == true
 
             for (player in queue.getHandle())
             {
@@ -91,12 +80,10 @@ object ScCougarQueueUpdateStreamIterator : Runnable
 
     override fun run()
     {
-        try
-        {
+        kotlin.runCatching {
             tick()
-        } catch (e: Exception)
-        {
-            e.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 }

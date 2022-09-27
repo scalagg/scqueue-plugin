@@ -3,7 +3,6 @@ package gg.scala.cougar.spigot.provider.impl
 import gg.scala.commons.annotations.plugin.SoftDependency
 import gg.scala.cougar.spigot.ScalaCougarSpigotPlugin
 import gg.scala.cougar.spigot.provider.PlayerPriorityProvider
-import gg.scala.cougar.spigot.server.ServerDetailsProvider
 import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan

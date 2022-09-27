@@ -86,8 +86,7 @@ object BackboneService
         }
     }
 
-    val type = object : TypeToken<MutableMap<UUID, String>>()
-    {}.type
+    val type: Type = object : TypeToken<MutableMap<UUID, String>>(){}.type
 
     @Subscribe("queue-update-stream")
     fun onQueueUpdates(message: AwareMessage)

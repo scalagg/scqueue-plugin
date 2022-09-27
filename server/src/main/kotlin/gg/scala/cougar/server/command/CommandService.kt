@@ -27,12 +27,10 @@ object CommandService
         thread {
             while (started)
             {
-                try
-                {
+                kotlin.runCatching {
                     commandHandler.pollInput()
-                } catch (e: Exception)
-                {
-                    e.printStackTrace()
+                }.onFailure {
+                    it.printStackTrace()
                 }
             }
         }
