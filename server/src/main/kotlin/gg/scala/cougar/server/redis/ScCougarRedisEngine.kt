@@ -9,6 +9,7 @@ import gg.scala.flavor.service.Configure
 import gg.scala.flavor.service.Service
 import gg.scala.flavor.service.ignore.IgnoreAutoScan
 import net.evilblock.cubed.serializers.Serializers
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
 /**
  * @author GrowlyX
@@ -32,6 +33,11 @@ object ScCougarRedisEngine
             )
         ) {
             Serializers.gson
+        }
+
+        Serializers.create {
+            GsonComponentSerializer.gson()
+                .populator().apply(this)
         }
 
         ServerSync.configureIndependent()

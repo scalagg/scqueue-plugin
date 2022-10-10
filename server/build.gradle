@@ -27,6 +27,9 @@ dependencies {
     api "gg.scala.aware:aware:1.0.8.3"
     api "gg.scala.commons:serializers:2.1.7"
 
+    api "net.kyori:adventure-key:4.11.0"
+    api "net.kyori:adventure-text-serializer-gson:4.11.0"
+
     api "com.google.code.gson:gson:2.9.0"
     api "gg.scala.commons:serversync:2.1.7"
     api "io.lettuce:lettuce-core:6.2.0.RELEASE"
