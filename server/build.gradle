@@ -18,7 +18,7 @@ dependencies {
     implementation "com.github.Revxrsal.Lamp:common:3.0.8"
     implementation "com.github.Revxrsal.Lamp:cli:3.0.8"
 
-    implementation 'org.slf4j:slf4j-api:2.0.1'
+    implementation 'org.slf4j:slf4j-api:2.0.3'
     implementation 'org.slf4j:slf4j-simple:2.0.0'
 
     implementation "org.mongodb:mongo-java-driver:3.12.11"
