@@ -36,7 +36,12 @@ class PrimaryCougarQueue(
             .firstOrNull()
     } else
     {
-        ServerContainer.getServer<GameServer>(targetServerId)
+        ServerContainer
+            .servers
+            .filterIsInstance<GameServer>()
+            .firstOrNull {
+                it.id.equals(targetServerId, true)
+            }
     }
 
     fun pushDataUpdates(): CompletableFuture<Void>

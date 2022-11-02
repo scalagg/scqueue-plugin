@@ -62,7 +62,6 @@ object ScCougarQueueIterator : Runnable
             val instance = queue.getGameServer()
                 ?: continue
 
-
             if (
                 (instance as AbstractServer).state != ServerState.Loaded ||
                 instance.getMaxPlayers() == instance.getPlayersCount()
