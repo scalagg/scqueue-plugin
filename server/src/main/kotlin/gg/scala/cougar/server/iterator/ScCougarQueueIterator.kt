@@ -1,8 +1,10 @@
 package gg.scala.cougar.server.iterator
 
 import gg.scala.aware.thread.AwareThreadContext
+import gg.scala.commons.agnostic.sync.server.AbstractServer
 import gg.scala.commons.agnostic.sync.server.ServerContainer
 import gg.scala.commons.agnostic.sync.server.impl.GameServer
+import gg.scala.commons.agnostic.sync.server.state.ServerState
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarQueueSettings
@@ -60,7 +62,9 @@ object ScCougarQueueIterator : Runnable
             val instance = queue.getGameServer()
                 ?: continue
 
+
             if (
+                (instance as AbstractServer).state != ServerState.Loaded ||
                 instance.getMaxPlayers() == instance.getPlayersCount()
             )
             {
