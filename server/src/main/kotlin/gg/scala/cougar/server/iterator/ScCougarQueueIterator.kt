@@ -75,7 +75,12 @@ object ScCougarQueueIterator : Runnable
             if (instance.getWhitelisted() == true)
             {
                 priorityQueue.removeIf {
-                    !instance.getWhitelistedPlayers()?.contains(it)!!
+                    !(instance
+                        .getMetadataValue<List<String>>(
+                            "server", "whitelisted-players"
+                        )
+                        ?.contains(it.toString())
+                        ?: false)
                 }
             }
 
