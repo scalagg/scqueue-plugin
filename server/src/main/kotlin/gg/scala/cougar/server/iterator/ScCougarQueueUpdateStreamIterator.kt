@@ -1,5 +1,7 @@
 package gg.scala.cougar.server.iterator
 
+import gg.scala.commons.agnostic.sync.server.AbstractServer
+import gg.scala.commons.agnostic.sync.server.state.ServerState
 import gg.scala.cougar.common.message.ScCougarServerMessageProducer
 import gg.scala.cougar.server.settings.impl.CougarIterationSettings
 import gg.scala.cougar.server.settings.impl.CougarLanguageSettings
@@ -47,7 +49,7 @@ object ScCougarQueueUpdateStreamIterator : Runnable
             val instance = queue.getGameServer()
             val messageMap = mutableMapOf<UUID, String>()
 
-            val offline = instance == null
+            val offline = instance == null || (instance as AbstractServer).state != ServerState.Loaded
             val whitelisted = instance != null && instance.getWhitelisted() == true
 
             for (player in queue.getHandle())
